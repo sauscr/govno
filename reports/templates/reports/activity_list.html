@@ -1,0 +1,13 @@
+{% extends "reports/base.html" %}
+
+{% block title %}Activities{% endblock %}
+
+{% block content %}
+<h1>Activities</h1>
+<ul>
+    {% for activity in activities %}
+    <li><a href="{% url 'activity_detail' activity.pk %}">{{ activity.name }}</a></li>
+    {% endfor %}
+</ul>
+<a href="{% url 'activity_new' %}">Add New Activity</a>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "reports/base.html" %}
+
+{% block title %}{{ activity.name }}{% endblock %}
+
+{% block content %}
+    <h1>{{ activity.name }}</h1>
+    <p>Responsible: {{ activity.responsible }}</p>
+    <p>Planned Budget: {{ activity.planned_budget }}</p>
+    <p>Expected Result: {{ activity.expected_result }}</p>
+    <p>Planned Deadline: {{ activity.planned_deadline }}</p>
+    <li><a href="{% url 'activity_edit' activity.pk %}">Edit</a></li>
+    <br></br>
+    <button onclick="window.history.back();">Back</button>
+{% endblock %}

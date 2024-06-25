@@ -1,0 +1,13 @@
+{% extends "reports/base.html" %}
+
+{% block title %}{% if is_edit %}Edit{% else %}New{% endif %} Activity{% endblock %}
+
+{% block content %}
+<h1>{% if is_edit %}Edit{% else %}New{% endif %} Activity</h1>
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save</button>
+</form>
+<a href="{% url 'activity_list' %}">Back to Activities</a>
+{% endblock %}

@@ -1,0 +1,13 @@
+<!-- templates/reports/target_indicator_detail.html -->
+{% extends "reports/base.html" %}
+
+{% block title %}{{ indicator.name }}{% endblock %}
+
+{% block content %}
+<h1>{{ indicator.name }}</h1>
+<p>Unit: {{ indicator.unit }}</p>
+<p>Planned Values: {{ indicator.planned_value_per_year }}</p>
+<li><a href="{% url 'target_indicator_detail' indicator.pk %}">Edit</a></li>
+<br><br>
+<li><a href="{% url 'target_indicator_list' %}">Back to Target Indicators</a></li>
+{% endblock %}

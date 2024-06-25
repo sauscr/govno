@@ -1,0 +1,14 @@
+{% extends "reports/base.html" %}
+
+{% block title %}Target Indicators{% endblock %}
+
+
+{% block content %}
+    <h1>Target Indicators</h1>
+    <ul>
+        {% for indicator in indicators %}
+        <li><a href="{% url 'target_indicator_detail' indicator.pk %}">{{ indicator.name }}</a></li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'target_indicator_new' %}">Add New Target Indicator</a>
+{% endblock %}
