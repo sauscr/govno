@@ -25,10 +25,15 @@ SECRET_KEY = 'django-insecure-87#_8wttwnq*t@(na7^+@j=4v&$07a3mevq(3cx0ns96_g!@@j
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
+# CSRF_TRUSTED_ORIGINS = [
+#     '',  # Replace with your actual Ngrok URL
+# ]
 
 # Application definition
+
+MODEL_NAMES = ['Activity', 'TargetIndicator', ]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -49,6 +54,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'reports.middleware.LoadDataMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -105,7 +112,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
-LANGUAGE_CODE = 'ru-ru'
+LANGUAGE_CODE = 'en-en'
 
 TIME_ZONE = 'UTC'
 

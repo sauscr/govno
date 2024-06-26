@@ -12,3 +12,28 @@
     </ul>
     <a href="{% url 'target_indicator_new' %}">Add New Target Indicator</a>
 {% endblock %}
+
+{% block main-content %}
+<div class="main-content">
+    <h1>Target Indicator List</h1>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Description</th>
+                
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in indicators %}
+            <tr>
+                <td>{{ i.pk }}</td>
+                <td>{{ i.name }}</td>
+                <td>{{ i.planned_value_per_year }}</td>
+                </tr>
+                {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

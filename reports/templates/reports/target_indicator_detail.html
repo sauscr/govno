@@ -7,7 +7,35 @@
 <h1>{{ indicator.name }}</h1>
 <p>Unit: {{ indicator.unit }}</p>
 <p>Planned Values: {{ indicator.planned_value_per_year }}</p>
-<li><a href="{% url 'target_indicator_detail' indicator.pk %}">Edit</a></li>
+<li><a href="{% url 'target_indicator_edit' indicator.pk %}">Edit</a></li>
 <br><br>
 <li><a href="{% url 'target_indicator_list' %}">Back to Target Indicators</a></li>
+{% endblock %}
+
+{% block main-content %}
+<div class="main-content">
+    <h1>Activity List</h1>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in instance %}
+            <tr>
+                <td>{{ i.pk }}</td>
+                <td>{{ i.name }}</td>
+                <td>{{ i.planned_value_per_year }}</td>
+                <td>{{ i.unit }}</td>
+                <td>{{ i.unit }}</td>
+                <td>{{ i.unit }}</td>
+                </tr>
+                {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock %}

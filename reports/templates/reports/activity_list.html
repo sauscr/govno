@@ -8,6 +8,31 @@
     {% for activity in activities %}
     <li><a href="{% url 'activity_detail' activity.pk %}">{{ activity.name }}</a></li>
     {% endfor %}
+    <div class="container">
+        <h1>Activity List</h1>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for activity in activities %}
+                <tr>
+                    <td>{{ activity.pk }}</td>
+                    <td>{{ activity.name }}</td>
+                    <td>{{ activity.responsible }}</td>
+                    <td>{{ activity.planned_budget }}</td>
+                    <td>{{ activity.expected_result }}</td>
+                    <td>{{ activity.planned_deadline }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </ul>
 <a href="{% url 'activity_new' %}">Add New Activity</a>
 {% endblock %}

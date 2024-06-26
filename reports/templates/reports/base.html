@@ -1,20 +1,75 @@
-<!-- templates/reports/base.html -->
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <title>{% block title %}My App{% endblock %}</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #fffefe;
+            color: #000000;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #028163;
+            color: #fff;
+            padding: 1rem;
+            text-align: center;
+        }
+        nav {
+            background-color: hsl(166, 35%, 55%);
+            padding: 0.5rem;
+            text-align: center;
+        }
+        nav a {
+            color: #fff;
+            margin: 0 1rem;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        main {
+            padding: 2rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1rem;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #800020;
+            color: #fff;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #ddd;
+        }
+    </style> 
 </head>
 <body>
     <header>
-        <h1>My Application</h1>
+        <h1>TABLICI</h1>
     </header>
     <nav>
-        <a href="{% url 'index' %}">Home</a>
-        <a href="{% url 'target_indicator_list' %}">Target Indicators</a>
-        <a href="{% url 'activity_list' %}">Activities</a>
+        <a href="{% url 'index' %}">INDEX</a>
+        <a href="{% url 'target_indicator_list' %}">ZAMETKI</a>
+        <a href="{% url 'activity_list' %}">CALENDAR</a>
     </nav>
     <main>
         {% block content %}{% endblock %}
+        {% block main-content %}{% endblock %}
     </main>
 </body>
 </html>

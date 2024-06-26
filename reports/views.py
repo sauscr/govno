@@ -8,10 +8,9 @@ def index(request):
     return render(request, 'reports/index.html')
 
 def activity_list(request):
-    activities = Activity.objects.all()
-    return render(request, 'reports/activity_list.html', {'activities': activities})
+    return render(request, 'reports/activity_list.html', {'activities': request.activitys})
 
-def activity_detail(request, pk):
+def activity_detail(request, pk):    
     activity = get_object_or_404(Activity, pk=pk)
     return render(request, 'reports/activity_detail.html', {'activity': activity})
 
@@ -35,11 +34,10 @@ def activity_edit(request, pk):
             return redirect('activity_detail', pk = activity.pk)
     else:
         form = ActivityForm(request.GET)
-    return render(request, 'reports/activity_edit.html', {'form': form, 'is_edit': False})
+    return render(request, 'reports/activity_edit.html', {'form': form, 'is_edit': True})
 
 def target_indicator_list(request):
-    indicators = TargetIndicator.objects.all()
-    return render(request, 'reports/target_indicator_list.html', {'indicators': indicators})
+    return render(request, 'reports/target_indicator_list.html', {'indicators': request.targetindicators})
 
 def target_indicator_detail(request, pk):
     indicator = get_object_or_404(TargetIndicator, pk=pk)
@@ -64,6 +62,6 @@ def target_indicator_edit(request, pk):
             return redirect('target_indicator_detail', pk=indicator.pk)
     else:
         form = TargetIndicatorForm(instance=indicator)
-    return render(request, 'reports/target_indicator_edit.html', {'form': form, 'is_edit': False})
+    return render(request, 'reports/target_indicator_edit.html', {'form': form, 'is_edit': True})
 
 # Similar views can be created for Activity, Report, FinancialReport, and ActivityReport
