@@ -24,3 +24,7 @@
     ```bash
     python manage.py runserver
     ```
+
+### `db.sqlite3` usage
+
+Some data represents inside the `backend/db.sqlite3`
