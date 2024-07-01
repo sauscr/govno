@@ -1,29 +1,37 @@
 {% extends "reports/base.html" %}
 
-{% block title %}Activities{% endblock %}
+{% block title %}Деятельности{% endblock %}
 
 {% block content %}
-<h1>Activities</h1>
+<h1>Деятельности</h1>
 <ul>
     {% for activity in activities %}
     <li><a href="{% url 'activity_detail' activity.pk %}">{{ activity.name }}</a></li>
     {% endfor %}
     <div class="container">
-        <h1>Activity List</h1>
+        <h1>Список Деятельностей</h1>
         <table class="table table-striped">
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Name</th>
-                    <th>Description</th>
-                    <th>Date</th>
+                    <th>Название</th>
+                    <th>Описание</th>
+                    <th>Дата</th>
+                    <th>Ожидаемый результат</th>
+                    <th>Плановый срок</th>
                 </tr>
             </thead>
             <tbody>
-                {% for activity in activities %}
+                {% for activity in activities %} {% comment %} activities находится в reports/views.py {% endcomment %}
                 <tr>
                     <td>{{ activity.pk }}</td>
-                    <td>{{ activity.name }}</td>
+                    <td>
+                        {% comment %} 
+                            See: https://docs.djangoproject.com/en/3.2/ref/templates/builtins/#std:templatetag-type
+                            activity is an instance of Activity model from reports/models.py
+                        {% endcomment %}
+                        <a href="{% url 'activity_detail' activity.pk %}">{{ activity.name|safe }}</a>  # type: ignore
+                    </td>  # type: ignore
                     <td>{{ activity.responsible }}</td>
                     <td>{{ activity.planned_budget }}</td>
                     <td>{{ activity.expected_result }}</td>
@@ -34,5 +42,5 @@
         </table>
     </div>
 </ul>
-<a href="{% url 'activity_new' %}">Add New Activity</a>
+<a href="{% url 'activity_new' %}">Добавить новую деятельность</a>
 {% endblock %}

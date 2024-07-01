@@ -1,6 +1,6 @@
 # reports/views.py
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponse
+# from django.http import HttpResponse
 from .models import TargetIndicator, Activity, Report, FinancialReport, ActivityReport
 from .forms import TargetIndicatorForm, ActivityForm, ReportForm, FinancialReportForm, ActivityReportForm
 
@@ -8,12 +8,12 @@ def index(request):
     return render(request, 'reports/index.html')
 
 def activity_list(request):
+    request.activitys = Activity.objects.all()
     return render(request, 'reports/activity_list.html', {'activities': request.activitys})
 
 def activity_detail(request, pk):    
     activity = get_object_or_404(Activity, pk=pk)
     return render(request, 'reports/activity_detail.html', {'activity': activity})
-
 
 def activity_new(request):
     if request.method == "POST":
@@ -37,6 +37,7 @@ def activity_edit(request, pk):
     return render(request, 'reports/activity_edit.html', {'form': form, 'is_edit': True})
 
 def target_indicator_list(request):
+    request.targetindicators = TargetIndicator.objects.all()
     return render(request, 'reports/target_indicator_list.html', {'indicators': request.targetindicators})
 
 def target_indicator_detail(request, pk):

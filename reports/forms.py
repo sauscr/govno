@@ -1,7 +1,8 @@
 # reports/forms.py
 from django import forms
 from .models import TargetIndicator, Activity, Report, FinancialReport, ActivityReport
-
+from django.core.exceptions import ValidationError
+import json
 class TargetIndicatorForm(forms.ModelForm):
     class Meta:
         model = TargetIndicator
@@ -22,8 +23,22 @@ class TargetIndicatorForm(forms.ModelForm):
         if len(unit) > 50:
             raise forms.ValidationError('Unit is too long.')
         return unit
-
+    
+    def clean_planned_value_per_year(self):
+        data = self.cleaned_data['planned_value_per_year']
+        if isinstance(data, int):
+            raise ValidationError("Enter a valid JSON string")
+        try:
+            json_data = json.loads(data)
+        except json.JSONDecodeError:
+            raise ValidationError('Invalid JSON data')
+        return json_data
+    
 class ActivityForm(forms.ModelForm):
+    planned_deadline = forms.DateField(
+        input_formats=['%d.%m.%Y'],
+        widget=forms.DateInput(format='%d.%m.%Y')
+    )
     class Meta:
         model = Activity
         fields = ['name', 'responsible', 'planned_budget', 'expected_result', 'planned_deadline']

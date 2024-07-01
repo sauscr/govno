@@ -12,59 +12,38 @@
             margin: 0;
             padding: 0;
         }
-        header {
-            background-color: #800020;
-            color: #fff;
-            padding: 1rem;
+        .jumbotron-fluid {
+            padding-top: 4rem;
+            padding-bottom: 4rem;
             text-align: center;
         }
-        nav {
-            background-color: #b56576;
-            padding: 0.5rem;
-            text-align: center;
-        }
-        nav a {
-            color: #fff;
-            margin: 0 1rem;
-            text-decoration: none;
-            font-weight: bold;
-        }
-        nav a:hover {
-            text-decoration: underline;
-        }
-        main {
-            padding: 2rem;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 1rem;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
+        .btn-primary {
             background-color: #800020;
-            color: #fff;
+            border-color: #800020;
         }
-        tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
-        tr:hover {
-            background-color: #ddd;
+        .btn-primary:hover {
+            background-color: #5c5c5c;
+            border-color: #5c5c5c;
         }
     </style> 
 <head>
     <title>TEST_SITE</title>
 </head>
 <body>
-    <h1>TEST_HOME</h1>
-    <ul>
-        <li><a href="{% url 'target_indicator_list' %}">Target Indicators</a></li>
-        <li><a href="{% url 'activity_list' %}">Activities</a></li>
-        <!-- Add links for other views -->
-    </ul>
+    <div class="container">
+        <div class="jumbotron jumbotron-fluid">
+            <div class="container">
+                <h1 class="display-4">Добро пожаловать на TEST_SITE</h1>
+                <p class="lead">Здесь вы можете найти все необходимые данные</p>
+                <hr class="my-4">
+                <p>Нажмите кнопки ниже для начала работы</p>
+                <p class="lead">
+                    <a class="btn btn-primary btn-lg" href="{% url 'target_indicator_list' %}" role="button">***TARGER_INDICATORS***</a>
+                    <a class="btn btn-primary btn-lg" href="{% url 'activity_list' %}" role="button">***ACTIVITIES***</a>
+                    <!-- Add links for other views -->
+                </p>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

@@ -1,5 +1,7 @@
+# from django.conf import settings
 from django.db import models
 from django.db.models import JSONField
+
 
 class TargetIndicator(models.Model):
     name = models.CharField(max_length=255)
