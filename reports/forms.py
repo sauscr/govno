@@ -4,6 +4,7 @@ from .models import TargetIndicator, Activity, Report, FinancialReport, Activity
 from django.core.exceptions import ValidationError
 import json
 class TargetIndicatorForm(forms.ModelForm):
+    planned_value_per_year = forms.CharField(widget=forms.Textarea, required=False)
     class Meta:
         model = TargetIndicator
         fields = ['name', 'unit', 'planned_value_per_year']
@@ -26,13 +27,26 @@ class TargetIndicatorForm(forms.ModelForm):
     
     def clean_planned_value_per_year(self):
         data = self.cleaned_data['planned_value_per_year']
-        if isinstance(data, int):
-            raise ValidationError("Enter a valid JSON string")
+        if not data:
+            return []
         try:
             json_data = json.loads(data)
         except json.JSONDecodeError:
             raise ValidationError('Invalid JSON data')
         return json_data
+    
+    def __init__(self, *args, **kwargs):
+        super(TargetIndicatorForm, self).__init__(*args, **kwargs)
+        if self.instance.pk:
+            json_data = json.dumps(self.instance.planned_value_per_year, indent=2)
+            self.fields['planned_value_per_year'].initial = json_data
+        # if isinstance(data, int):
+        #     raise ValidationError("Enter a valid JSON string")
+        # try:
+        #     json_data = json.loads(data)
+        # except json.JSONDecodeError:
+        #     raise ValidationError('Invalid JSON data')
+        # return json_data
     
 class ActivityForm(forms.ModelForm):
     planned_deadline = forms.DateField(

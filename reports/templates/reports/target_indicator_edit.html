@@ -1,12 +1,71 @@
 {% extends "reports/base.html" %}
 
-{% block title %}{% if is_edit %}Edit{% else %}New{% endif %} Activity{% endblock %}
+{% block title %}{% if is_edit %}Edit{% else %}New{% endif %} Target indicator{% endblock %}
 
 {% block content %}
-    <h1>{% if form.instance.pk %}Edit{% else %}New{% endif %} Target Indicator</h1>
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Save</button>
-    </form>
+<h1>{% if is_edit %}Edit{% else %}New{% endif %} Target Indicator</h1>
+<form id="target-indicator-form" method="post">
+    {% csrf_token %}
+    <div>
+        <label for="id_name">Name:</label>
+        {{ form.name }}
+    </div>
+    <div>
+        <label for="id_unit">Unit:</label>
+        {{ form.unit }}
+    </div>
+    <div>
+        <label>Planned value per year:</label>
+        <input type="hidden" id="id_planned_value_per_year" name="planned_value_per_year" />
+        <table id="plannedValueTable" border="1">
+            <tr>
+                <th>Year</th>
+                <th>Value</th>
+            </tr>
+            <tr>
+                <td><input type="text" name="year[]" /></td>
+                <td><input type="text" name="value[]" /></td>
+            </tr>
+        </table>
+        <button type="button" onclick="addRow()">Add Row</button>
+    </div>
+    <button type="submit">{% if is_edit %}Update{% else %}Create{% endif %}</button>
+</form>
+
+<script>
+    function addRow() {
+        let table = document.getElementById("plannedValueTable");
+        let row = table.insertRow(-1);
+        let cell1 = row.insertCell(0);
+        let cell2 = row.insertCell(1);
+        cell1.innerHTML = '<input type="text" name="year[]" />';
+        cell2.innerHTML = '<input type="text" name="value[]" />';
+    }
+
+    function collectData() {
+        let years = document.getElementsByName('year[]');
+        let values = document.getElementsByName('value[]');
+        let data = [];
+
+        for (let i = 0; i < years.length; i++) {
+            data.push({ year: years[i].value, value: values[i].value });
+        }
+
+        document.getElementById('id_planned_value_per_year').value = JSON.stringify(data, null, 2);
+    }
+
+    window.onload = function() {
+        document.getElementById('target-indicator-form').onsubmit = collectData;
+        let jsonData = JSON.parse(document.getElementById('id_planned_value_per_year').value || '[]');
+        let table = document.getElementById("plannedValueTable");
+
+        jsonData.forEach(item => {
+            let row = table.insertRow(-1);
+            let cell1 = row.insertCell(0);
+            let cell2 = row.insertCell(1);
+            cell1.innerHTML = `<input type="text" name="year[]" value="${item.year}" />`;
+            cell2.innerHTML = `<input type="text" name="value[]" value="${item.value}" />`;
+        });
+    };
+</script>
 {% endblock %}
