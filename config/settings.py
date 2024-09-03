@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-87#_8wttwnq*t@(na7^+@j=4v&$07a3mevq(3cx0ns96_g!@@j'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False # чтобы ошибки не отображались у клиента
 
 ALLOWED_HOSTS = ["*"]
 
@@ -76,6 +76,8 @@ TEMPLATES = [
         },
     },
 ]
+
+ASGI_APPLICATION = 'config.asgi.application'
 
 WSGI_APPLICATION = 'config.wsgi.application'
 

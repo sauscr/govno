@@ -1,39 +1,62 @@
 {% extends "reports/base.html" %}
-
-{% block title %}Target Indicators{% endblock %}
-
-
 {% block content %}
-    <h1>Target Indicators</h1>
-    <ul>
-        {% for indicator in indicators %}
-        <li><a href="{% url 'target_indicator_detail' indicator.pk %}">{{ indicator.name }}</a></li>
-        {% endfor %}
-    </ul>
-    <a href="{% url 'target_indicator_new' %}">Add New Target Indicator</a>
-{% endblock %}
+<h1>Target Indicators</h1>
+<div id="hot"></div>
+<button id="save">Save Changes</button>
 
-{% block main-content %}
-<div class="main-content">
-    <h1>Target Indicator List</h1>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Description</th>
-                
-            </tr>
-        </thead>
-        <tbody>
-            {% for i in indicators %}
-            <tr>
-                <td>{{ i.pk }}</td>
-                <td>{{ i.name }}</td>
-                <td>{{ i.planned_value_per_year }}</td>
-                </tr>
-                {% endfor %}
-        </tbody>
-    </table>
-</div>
+<script>
+    // Добавляем событие на загрузку страницы
+    document.addEventListener("DOMContentLoaded", function () {
+        // Получаем данные из шаблона
+        const data = {{ indicators|safe }};
+        
+        // Получаем элемент с именем "hot"
+        const container = document.getElementById('hot');
+        // Создаем экземпляр класса Handsontable
+        const hot = new Handsontable(container, {
+            // Данные для таблицы
+            data: data,
+            // Заголовки столбцов
+            colHeaders: ['Название', 'Единица измерения', 'Плановое значение в год'],
+            // Конфигурация столбцов
+            columns: [
+                { data: 'name' }, // Первый столбец - имя
+                { data: 'unit' }, // Второй столбец - единица измерения
+                { data: 'planned_value_per_year', renderer: 'html' } // Третий столбец - плановое значение в году, с использованием рендерера "html"
+            ],
+            // Показываем номера строк
+            rowHeaders: true,
+            // Показываем фильтры
+            filters: true,
+            // Показываем выпадающие меню
+            dropdownMenu: true,
+            // Показываем контекстное меню
+            contextMenu: true
+        });
+
+        // Добавляем событие на клик по кнопке "save"
+        document.getElementById('save').addEventListener('click', () => {
+            // Получаем обновленные данные из таблицы
+            const updatedData = hot.getData();
+            // Отправляем POST запрос на сохранение данных
+            fetch("{% url 'save_target_indicators' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify(updatedData)
+            }).then(response => response.json())
+              .then(data => {
+                  // Показываем сообщение об успешном сохранении данных
+                  if (data.success) {
+                      alert("Данные успешно сохранены!");
+                  } else {
+                      // Показываем сообщение об ошибке сохранения данных
+                      alert("Не удалось сохранить данные.");
+                  }
+              });
+        });
+    });
+</script>
 {% endblock %}

@@ -12,6 +12,8 @@ urlpatterns = [
     path('activities/new', views.activity_new, name='activity_new'),
     path('activities/<int:pk>', views.activity_detail, name='activity_detail'),
     path('activities/<int:pk>/edit', views.activity_edit, name='activity_edit'),
+    path('save-target-indicators/', views.save_target_indicators, name='save_target_indicators'),
+
     # path('somePath/', views.somePath_list, name='somePath_list'),
     # path('somePath/new', views.somePath_new, name='somePath_new'),
     # path('somePath/<int:pk>', views.somePath_detail, name='somePath_detail'),
