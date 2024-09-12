@@ -1,0 +1,35 @@
+<!-- your_template.html -->
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Submit</button>
+</form>
+
+<table border="1">
+    <thead>
+        <tr>
+            <th>№</th>
+            <th>Наименование целевого индикатора и показателя</th>
+            <th>Единица измерения</th>
+            <th>План на текущий год</th>
+            <th>Значение на конец отчетного периода</th>
+            <th>Относительное отклонение, %</th>
+            <th>Причина</th>
+            <th>Выполнено/Не выполнено</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for indicator in indicators %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ indicator.name }}</td>
+            <td>%</td> <!-- Статически добавляем процент -->
+            <td>{{ indicator.plan_value }}</td>
+            <td>{{ indicator.actual_value }}</td>
+            <td>{{ indicator.relative_deviation }}</td>
+            <td>{{ indicator.diff_reason }}</td>
+            <td>{{ indicator.result_end }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
