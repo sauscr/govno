@@ -6,7 +6,7 @@ import json
 
 
 
-class TargetIndicatorForm(forms.ModelForm):
+class TargetIndicatorForm(forms.ModelForm): # первая таблица
     class Meta:
         model = TableOne
         fields = ['name', 'plan_value', 'actual_value', 'diff_reason',  ]

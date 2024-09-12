@@ -3,13 +3,18 @@ from django.shortcuts import render, get_object_or_404, redirect
 # from django.http import HttpResponse
 from .models import TableOne
 from .forms import TargetIndicatorForm
+from .csrf import csrf_exempt
 
-def target_indicator_view(request):
+@csrf_exempt
+def target_indicator_view(request, pk = None):
     if request.method == 'POST':
-        form = TargetIndicatorForm(request.POST)
+        
+        form = TargetIndicatorForm(request.POST) 
         if form.is_valid():
             form.save()
             return redirect('target_indicator')  # Перенаправление на страницу успеха после сохранения
+        else:
+            print("Форма невалидна", form.errors)
     else:
         form = TargetIndicatorForm()
     

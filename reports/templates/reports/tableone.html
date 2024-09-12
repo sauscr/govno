@@ -1,9 +1,7 @@
 <!-- your_template.html -->
-<form method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Submit</button>
-</form>
+{% extends "reports/base.html" %}
+{% block content %}
+
 
 <table border="1">
     <thead>
@@ -33,3 +31,10 @@
         {% endfor %}
     </tbody>
 </table>
+    <form method="POST">
+    {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Submit</button>
+    </form>
+    
+{% endblock %}

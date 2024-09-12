@@ -27,14 +27,18 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
-CSRF_TRUSTED_ORIGINS = [
-    'https://fc77-145-255-0-246.ngrok-free.app',  # Replace with your actual Ngrok URL
-]
+# CSRF_TRUSTED_ORIGINS = [
+#     '*',  # Replace with your actual Ngrok URL
+# ]
+
+STATIC_URL = '/static/'
+# STATICFILES_DIRS = [os.path.join(BASE_DIR, '../frontend/build/static')]
 
 
 # Application definition
 
-# MODEL_NAMES = ['Activity', 'TargetIndicator', ]
+MODEL_NAMES = ['reports/models.TableOne', 
+                ]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -50,8 +54,8 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    # 'django.middleware.common.CommonMiddleware',
-    # 'django.middleware.csrf.CsrfViewMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
