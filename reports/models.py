@@ -39,4 +39,5 @@ class TableOne(models.Model):
 
 
 class TableTwo(models.Model):
-    pass
+    name = models.CharField(max_length=255,
+                            verbose_name='Наименование мероприятия',)
