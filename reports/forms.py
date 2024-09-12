@@ -1,22 +1,30 @@
 # reports/forms.py
 from django import forms
-from .models import TargetIndicator, Activity, Report, FinancialReport, ActivityReport
+from .models import TableOne
 from django.core.exceptions import ValidationError
 import json
+
+
+
 class TargetIndicatorForm(forms.ModelForm):
     class Meta:
-        model = TargetIndicator
-        fields = ['name', 'unit', 'planned_value_per_year']
+        model = TableOne
+        fields = ['name', 'plan_value', 'actual_value', 'diff_reason',  ]
 
-    def clean_name(self):
-        name = self.cleaned_data.get('name')
-        if not name:
-            raise forms.ValidationError('This field is required.')
-        if len(name) > 255:
-            raise forms.ValidationError('Name is too long.')
-        return name
+    def clean(self):
+        cleaned_data = super().clean()
+        plan_value = cleaned_data.get('plan_value')
+        actual_value = cleaned_data.get('actual_value')
 
-    def clean_unit(self):
+        if plan_value is None or actual_value is None:
+            raise forms.ValidationError("Плановое и фактическое значения обязательны для заполнения.")
+        
+        return cleaned_data
+    
+
+    
+
+    '''    def clean_unit(self):
         unit = self.cleaned_data.get('unit')
         if not unit:
             raise forms.ValidationError('This field is required.')
@@ -25,7 +33,7 @@ class TargetIndicatorForm(forms.ModelForm):
         return unit
     
     def clean_planned_value_per_year(self):
-        data = self.cleaned_data['planned_value_per_year']
+        data = self.cleaned_data['plan_value']
         if isinstance(data, int):
             raise ValidationError("Enter a valid JSON string")
         try:
@@ -34,7 +42,10 @@ class TargetIndicatorForm(forms.ModelForm):
             raise ValidationError('Invalid JSON data')
         return json_data
     
-class ActivityForm(forms.ModelForm):
+
+
+
+    class ActivityForm(forms.ModelForm):
     planned_deadline = forms.DateField(
         input_formats=['%d.%m.%Y'],
         widget=forms.DateInput(format='%d.%m.%Y')
@@ -76,6 +87,9 @@ class ActivityForm(forms.ModelForm):
         if not planned_deadline:
             raise forms.ValidationError('This field is required.')
         return planned_deadline
+
+
+
 
 class ReportForm(forms.ModelForm):
     class Meta:
@@ -133,3 +147,4 @@ class ActivityReportForm(forms.ModelForm):
         if completion_percentage < 0 or completion_percentage > 100:
             raise forms.ValidationError('Completion percentage must be between 0 and 100.')
         return completion_percentage
+        '''

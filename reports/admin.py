@@ -1,7 +1,11 @@
 from django.contrib import admin
+from .models import TableOne
 
 
-from .models import (
+admin.site.register(TableOne)
+
+
+'''from .models import (
     Activity,
     TargetIndicator,
 )
@@ -37,6 +41,6 @@ class ActivityAdmin(admin.ModelAdmin):
 @admin.register(TargetIndicator)
 class TargetIndicatorAdmin(admin.ModelAdmin):
     pass
-
+'''
 
 
