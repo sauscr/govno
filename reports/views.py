@@ -1,33 +1,21 @@
 # reports/views.py
 from django.shortcuts import render, get_object_or_404, redirect
-# from django.http import HttpResponse
-<<<<<<< HEAD
-from .models import TableOne
-from .forms import TargetIndicatorForm
-from .csrf import csrf_exempt
-
-@csrf_exempt
-def target_indicator_view(request, pk = None):
-    if request.method == 'POST':
-        
-        form = TargetIndicatorForm(request.POST) 
-        if form.is_valid():
-            form.save()
-            return redirect('target_indicator')  # Перенаправление на страницу успеха после сохранения
-        else:
-            print("Форма невалидна", form.errors)
-=======
+from django.http import HttpResponseRedirect, HttpResponse
 from .models import TableOne, TableTwo
 from .forms import TableOneForm, TableTwoForm
 
 def view_table_one(request):
+    """
+    View-функция для отображения и добавления данных первой таблицы.
+    """
+    
     
     if request.method == 'POST':
         form = TableOneForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('target_indicator')
->>>>>>> 39e8d485cd2b440bd5b7c1baf0bb86e0c64a7ef9
+            return redirect('indicator_one')
+
     else:
         form = TableOneForm()
     
@@ -37,13 +25,49 @@ def view_table_one(request):
                   {'form': form,
                    'indicators': indicators})
 
+    indicators = TableOne.objects.all()
+
+    context = {
+        'form': TableOneForm(),
+        'indicators': indicators
+    }
+
+    return render(request, 'reports/tableone.html', context)
+
+def edit_tableone(request, id):
+    """
+    Функция для редактирования данных индикатора.
+    """
+    indicator = get_object_or_404(TableOne, id=id)
+    if request.method == 'POST':
+        form = TableOneForm(request.POST, instance=indicator)
+        if form.is_valid():
+            form.save()
+            return redirect('indicator_one')
+    else:
+        form = TableOneForm(instance=indicator)
+    
+    return render(request, 'reports/tableone.html', {'form': form})
+
+def delete_tableone(request, id):
+    """
+    Функция для удаления индикатора.
+    """
+    indicator = get_object_or_404(TableOne, id=id)
+    indicator.delete()
+    return redirect('indicator_one')
+
+
 
 def view_table_two(request):
+
+    context = 'Крутое название сайта'
+
     if request.method == 'POST':
         form = TableTwoForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('target_indicator_two')
+            return redirect('indicator_two')
     else:
         form = TableTwoForm()
 
@@ -51,4 +75,5 @@ def view_table_two(request):
 
     return render(request, 'reports/tabletwo.html',
                   {'form': form,
-                   'indicators': indicators})
+                   'indicators': indicators,
+                   })

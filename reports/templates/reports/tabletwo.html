@@ -1,11 +1,12 @@
-<form method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Сохранить</button>
-</form>
+{% extends "reports/base.html" %}
+{% block title %}Крутое название сайта{% endblock %}
+{% block content %}
+
+<!-- Подключаем стили для DataTables -->
+<link href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" rel="stylesheet">
 
 <h2>Таблица данных</h2>
-<table border="1">
+<table id="activityTable" class="display" style="width:calc(100% - 20px)">
     <thead>
         <tr>
             <th>Наименование мероприятия</th>
@@ -17,7 +18,7 @@
             <th>РБ</th>
             <th>МБ</th>
             <th>ВНБ</th>
-            <th>Отношение фактически освоенного к предусмотренному обьему</th>
+            <th>Отношение фактически освоенного к предусмотренному объему</th>
         </tr>
     </thead>
     <tbody>
@@ -37,3 +38,24 @@
         {% endfor %}
     </tbody>
 </table>
+
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Сохранить</button>
+</form>
+
+<!-- Подключаем скрипты для DataTables -->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#activityTable').DataTable({
+            "language": {
+                "curl": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Russian.json"
+            }
+        });
+    });
+</script>
+
+{% endblock %}

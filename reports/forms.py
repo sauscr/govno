@@ -5,7 +5,7 @@ from .models import TableOne, TableTwo
 
 
 class CleanMixin:
-    '''
+    '''g
     Метод для проверки обязательных полей и значений.
     '''
     required_fields = []

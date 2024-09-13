@@ -32,7 +32,7 @@ ALLOWED_HOSTS = ["*"]
 # ]
 
 STATIC_URL = '/static/'
-# STATICFILES_DIRS = [os.path.join(BASE_DIR, '../frontend/build/static')]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, './reports/templates/reports'), ]
 
 
 # Application definition
