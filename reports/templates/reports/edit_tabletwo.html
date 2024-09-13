@@ -1,0 +1,6 @@
+<form method="POST" action="{% url 'edit_indicator_two' form.instance.id %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Сохранить</button>
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+</form>

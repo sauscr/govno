@@ -19,6 +19,7 @@
             <th>МБ</th>
             <th>ВНБ</th>
             <th>Отношение фактически освоенного к предусмотренному объему</th>
+            <th>Действия</th> <!-- Добавляем колонку для кнопок -->
         </tr>
     </thead>
     <tbody>
@@ -34,6 +35,10 @@
             <td>{{ indicator.mb_actually }}</td>
             <td>{{ indicator.vnb_actually }}</td>
             <td>{{ indicator.mastered_to_unmastered }}</td>
+            <td>
+                <a href="{% url 'edit_indicator_two' indicator.id %}" class="btn btn-primary btn-sm">Редактировать</a>
+                <a href="{% url 'delete_indicator_two' indicator.id %}" class="btn btn-danger btn-sm" onclick="return confirm('Вы уверены, что хотите удалить этот элемент?')">Удалить</a>
+            </td>
         </tr>
         {% endfor %}
     </tbody>
@@ -52,7 +57,7 @@
     $(document).ready(function() {
         $('#activityTable').DataTable({
             "language": {
-                "curl": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Russian.json"
+                "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Russian.json"
             }
         });
     });
