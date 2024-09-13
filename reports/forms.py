@@ -1,6 +1,6 @@
 # reports/forms.py
 from django import forms
-from .models import TableOne, TableTwo
+from .models import TableOne, TableTwo, InitialData
 
 
 
@@ -23,12 +23,25 @@ class CleanMixin:
         
         return cleaned_data
 
+class InitialDataForm(CleanMixin, forms.Form):
+    '''
+    Класс для заполнения инициализируемых данных.
+    '''
+    required_fields = ['plan_value', 'rf_set', 'mb_set',
+                       'vnb_set', 'time_execution_plan',]
+
+    class Meta:
+        model = InitialData
+        fields = ['indicator_name', 'unit', 'event_name',
+                  'plan_value','rf_set', 'mb_set', 'vnb_set',
+                  'time_execution_plan', 'expected_result']
+
 
 class TableOneForm(CleanMixin, forms.ModelForm):
     '''
     Класс формы для модели первой таблицы.
     '''
-    required_fields = ['plan_value', 'actual_value']
+    required_fields = ['actual_value', ]
 
     class Meta:
         model = TableOne
