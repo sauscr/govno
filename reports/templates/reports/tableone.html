@@ -2,21 +2,29 @@
     {% csrf_token %}
     {{ form.as_p }}
 
-    <h3>Данные из InitialData:</h3>
+    <h3>Данные из InitialData и TableOne:</h3>
     <table>
         <thead>
             <tr>
                 <th>Наименование</th>
                 <th>Единица измерения</th>
                 <th>План</th>
+                <th>Факт</th>
+                <th>Причина отклонения</th>
+                <th>Результат</th>
+                <th>Относительное отклонение</th>
             </tr>
         </thead>
         <tbody>
-            {% for data in initial_data_values %}
+            {% for initial, table in combined_data %}
             <tr>
-                <td>{{ data.indicator_name }}</td>
-                <td>{{ data.unit }}</td>
-                <td>{{ data.plan_value }}</td>
+                <td>{{ initial.indicator_name }}</td>
+                <td>{{ initial.unit }}</td>
+                <td>{{ initial.plan_value }}</td>
+                <td>{{ table.actual_value }}</td>
+                <td>{{ table.diff_reason }}</td>
+                <td>{{ initial.result }}</td>
+                <td>{{ initial.percentage_deviation }}</td>
             </tr>
             {% endfor %}
         </tbody>

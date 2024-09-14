@@ -23,7 +23,7 @@ class CleanMixin:
         
         return cleaned_data
 
-class InitialDataForm(CleanMixin, forms.Form):
+class InitialDataForm(CleanMixin, forms.ModelForm):
     '''
     Форма для заполнения инициализируемых данных.
     '''
