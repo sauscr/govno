@@ -1,13 +1,11 @@
-class JoinServices:
-    '''
-    Сервис для join запросов в БД.
-    '''
+from ..models import InitialData
 
-    def __init__(self, model_a, model_b, fields):
-        self.model_a = model_a
-        self.model_b = model_b
-        self.fields = fields
 
-    def get_joined_data(self):
-        return self.model_a.objects.\
-            select_related(self.model_b).values(*self.fields)
+class DataServis:
+
+    @staticmethod
+    def get_filtered_data(*fields):
+        '''
+        Возвращает только указанные поля из модели InitialData.
+        '''
+        return InitialData.objects.filter(*fields)

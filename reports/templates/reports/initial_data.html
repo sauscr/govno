@@ -1,0 +1,37 @@
+<!-- your_template.html -->
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Submit</button>
+</form>
+
+<table border="1">
+    <thead>
+        <tr>
+            <th>indicator_name</th>
+            <th>unit</th>
+            <th>plan_value</th>
+            <th>event_name</th>
+            <th>rf_set</th>
+            <th>mb_set</th>
+            <th>vnb_set</th>
+            <th>time_execution_plan</th>
+            <th>expected_result</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for indicator in indicators %}
+        <tr>
+            <td>{{ indicator.indicator_name }}</td>
+            <td>{{ indicator.unit }}</td>
+            <td>{{ indicator.plan_value }}</td>
+            <td>{{ indicator.event_name }}</td>
+            <td>{{ indicator.rf_set }}</td>
+            <td>{{ indicator.mb_set }}</td>
+            <td>{{ indicator.vnb_set }}</td>
+            <td>{{ indicator.time_execution_plan }}</td>
+            <td>{{ indicator.expected_result }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

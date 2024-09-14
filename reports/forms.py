@@ -1,6 +1,6 @@
 # reports/forms.py
 from django import forms
-from .models import TableOne, TableTwo, InitialData
+from .models import TableOne, TableTwo, TableThree, InitialData
 
 
 
@@ -25,7 +25,7 @@ class CleanMixin:
 
 class InitialDataForm(CleanMixin, forms.Form):
     '''
-    Класс для заполнения инициализируемых данных.
+    Форма для заполнения инициализируемых данных.
     '''
     required_fields = ['plan_value', 'rf_set', 'mb_set',
                        'vnb_set', 'time_execution_plan',]
@@ -39,23 +39,33 @@ class InitialDataForm(CleanMixin, forms.Form):
 
 class TableOneForm(CleanMixin, forms.ModelForm):
     '''
-    Класс формы для модели первой таблицы.
+    Форма для модели первой таблицы.
     '''
     required_fields = ['actual_value', ]
 
     class Meta:
         model = TableOne
-        fields = ['name', 'plan_value', 'actual_value', 'diff_reason',]
+        fields = ['actual_value', 'diff_reason',]
     
 
 class TableTwoForm(CleanMixin, forms.ModelForm):
     '''
-    Класс формы для модели второй таблицы.
+    Форма для модели второй таблицы.
     '''
-    required_fields = ['rf_set', 'mb_set', 'vnb_set',
-                       'rf_actually', 'mb_actually', 'vnb_actually',]
+    required_fields = ['rf_actually', 'mb_actually', 'vnb_actually',]
     
     class Meta:
         model = TableTwo
-        fields = ['name', 'rf_set', 'mb_set', 'vnb_set',
-                  'rf_actually', 'mb_actually', 'vnb_actually',]
+        fields = ['rf_actually', 'mb_actually', 'vnb_actually',]
+
+
+class TableThreeForm(CleanMixin, forms.ModelForm):
+    '''
+    Форма для модели третьей таблицы.
+    '''
+    required_fields = ['time_execution_actually',]
+    
+    class Meta:
+        model = TableThree
+        fields = ['time_execution_actually', 'actual_result',]
+
