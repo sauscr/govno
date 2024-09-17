@@ -37,7 +37,7 @@ class TableTwo(models.Model):
     @property
     def planned_sum(self):
         rf_set = self.init.rf_set
-        rb_set = self.init.rf_set
+        rb_set = self.init.rb_set
         mb_set = self.init.mb_set
         vnb_set = self.init.vnb_set
         return sum([rf_set, rb_set, mb_set, vnb_set])
@@ -59,7 +59,28 @@ class TableThree(models.Model):
 
     time_execution_actually = models.FloatField(verbose_name='Время по факту',)
     actual_result = models.CharField(max_length=255, verbose_name='Результат',)
-    
+
+    init = models.ForeignKey('InitialData', on_delete=models.CASCADE, null=True)
+
+    @property
+    def executor(self):
+        text = self.init.indicator_name
+        return extract_text(text)
+
+    @property
+    def result(self):
+        plan = self.init.time_execution_plan
+        return result(
+            self.time_execution_actually, plan
+        )
+
+
+    @property
+    def percent(self):
+        plan = self.init.time_execution_plan
+        return calculate_ratio_mastered_to_unmastered(
+            plan, self.time_execution_actually
+        )
 
 
 
@@ -74,12 +95,11 @@ class InitialData(models.Model):
 
     event_name = models.CharField(max_length=255,
                                   verbose_name='Наименование мероприятия',)
-    rf_set = models.FloatField(verbose_name='Референс', default=0.0,)
-    rb_set = models.FloatField(verbose_name='РБ', default=0.0,)
-    mb_set = models.FloatField(verbose_name='МБ', default=0.0)
-    vnb_set = models.FloatField(verbose_name='ВНБ', default=0.0,)
+    rf_set = models.FloatField(verbose_name='Референс',)
+    rb_set = models.FloatField(verbose_name='РБ',)
+    mb_set = models.FloatField(verbose_name='МБ',)
+    vnb_set = models.FloatField(verbose_name='ВНБ',)
 
 
-    time_execution_plan = models.FloatField(verbose_name='Срок выполнения по плану',
-                                            default=0.0,)
+    time_execution_plan = models.FloatField(verbose_name='Срок выполнения по плану',)
     expected_result = models.CharField(max_length=255, verbose_name='Ожидаемы результат',)

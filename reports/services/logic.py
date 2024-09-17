@@ -1,4 +1,5 @@
-# убрать лишние классы (оставить просто функции)
+import re
+
 def calculate_relative_diviation(value1, value2):
     '''
     Вычисление относительной дивергенции между двумя значениями.
@@ -16,7 +17,6 @@ def calculate_ratio_mastered_to_unmastered(value1, value2):
     return None
 
 
-
 def result(plan_value, actual_value):
     '''
     Методы, связанные с определением результатов.
@@ -27,3 +27,12 @@ def result(plan_value, actual_value):
         return 'Достигнут'
         
 
+def extract_text(text):
+    '''
+    Поиска текста между двойными кавычками в строке.
+    '''
+    pattern = r'«(.*?)»'
+    much = re.search(pattern, text)
+    if much:
+        return much.group(1)
+    return None

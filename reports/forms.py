@@ -73,5 +73,5 @@ class TableThreeForm(CleanMixin, forms.ModelForm):
     
     class Meta:
         model = TableThree
-        fields = ['time_execution_actually', 'actual_result',]
+        fields = ['time_execution_actually', 'actual_result', 'init',]
 

@@ -1,7 +1,7 @@
 
 from django.shortcuts import render, redirect
 from .models import TableOne, TableTwo, TableThree, InitialData
-from .forms import TableOneForm, TableTwoForm, InitialDataForm
+from .forms import TableOneForm, TableTwoForm, TableThreeForm, InitialDataForm
 
 
 def process_form(request, form_class, redirect_url):
@@ -58,7 +58,7 @@ def view_table_one(request):
     url = '/reports/tableone/'
     form = process_form(request, TableOneForm, url)
 
-    initial_data_walues = get_initial_values(
+    initial_data_values = get_initial_values(
         InitialData.objects.all(),
         ['indicator_name', 'unit', 'plan_value',]
     )
@@ -68,7 +68,7 @@ def view_table_one(request):
         ['actual_value', 'result', 'percentage_deviation',]
     )
 
-    combined_data = zip(initial_data_walues, table_data_values)
+    combined_data = zip(initial_data_values, table_data_values)
 
     return render(request, 'reports/tableone.html',{
         'form': form,
@@ -80,7 +80,7 @@ def view_table_two(request):
     url = '/reports/tabletwo/'
     form = process_form(request, TableTwoForm, url)
 
-    initial_data_walues = get_initial_values(
+    initial_data_values = get_initial_values(
         InitialData.objects.all(),
         ['event_name', 'rf_set', 'rb_set', 'mb_set', 'vnb_set',]
     )
@@ -90,7 +90,7 @@ def view_table_two(request):
         ['rf_actually', 'rb_actually', 'mb_actually', 'vnb_actually',
          'planned_sum', 'actual_sum', 'percent',]
     )
-    combined_data = zip(initial_data_walues, table_data_values)
+    combined_data = zip(initial_data_values, table_data_values)
 
     return render(request,'reports/tabletwo.html', {
         'form': form,
@@ -99,4 +99,23 @@ def view_table_two(request):
 
 
 def view_table_three(request):
-    pass
+    url = '/reports/tablethree/'
+    form = process_form(request, TableThreeForm, url)
+
+    initial_data_values = get_initial_values(
+        InitialData.objects.all(),
+        ['event_name', 'expected_result', 'time_execution_plan',]
+    )
+
+    table_data_values = get_table_data_values(
+        TableThree.objects.all(),
+        ['actual_result', 'time_execution_actually',
+         'executor', 'result', 'percent',]
+    )
+
+    combined_data = zip(initial_data_values, table_data_values)
+
+    return render(request,'reports/tablethree.html', {
+        'form': form,
+        'combined_data': combined_data,
+    })
