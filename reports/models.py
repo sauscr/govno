@@ -34,7 +34,7 @@ class TableTwo(models.Model):
     init = models.ForeignKey('InitialData', on_delete=models.CASCADE, null=True)
 
     @property
-    def planned_sum(self):
+    def planned_sum_set(self):
         rf_set = self.init.rf_set
         mb_set = self.init.mb_set
         vnb_set = self.init.vnb_set
@@ -48,7 +48,7 @@ class TableTwo(models.Model):
 
 
     @property
-    def mastered_to_unmastered(self):
+    def planned_sum(self):
         return Math.calculate_ratio_mastered_to_unmastered(
             self.actual_sum, self.planned_sum)
 
