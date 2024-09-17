@@ -1,4 +1,10 @@
 /venv
 *.pyc
 __pycache__
+
+
+# Игнорировать базу данных
 db.sqlite3
+
+# Игнорировать настройки конфигурации
+config/settings.py
