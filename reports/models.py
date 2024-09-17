@@ -1,5 +1,5 @@
 from django.db import models
-from .services.logic import Math, ResultService, UtilityService
+from .services.logic import Math, ResultService
 
 class TableOne(models.Model):
 
@@ -27,30 +27,33 @@ class TableOne(models.Model):
 
 class TableTwo(models.Model):
 
-    rf_actually = models.FloatField(verbose_name='Референс',)
-    mb_actually = models.FloatField(verbose_name='МБ',)
-    vnb_actually = models.FloatField(verbose_name='ВНБ',)
+    rf_actually = models.FloatField(verbose_name='Референс', null=True)
+    rb_actually = models.FloatField(verbose_name='РБ', null=True)
+    mb_actually = models.FloatField(verbose_name='МБ', null=True)
+    vnb_actually = models.FloatField(verbose_name='ВНБ', null=True)
 
     init = models.ForeignKey('InitialData', on_delete=models.CASCADE, null=True)
 
     @property
-    def planned_sum_set(self):
+    def planned_sum(self):
         rf_set = self.init.rf_set
+        rb_set = self.init.rf_set
         mb_set = self.init.mb_set
         vnb_set = self.init.vnb_set
-        return UtilityService.calculate_sums(
-            rf_set, mb_set, vnb_set)
+        return sum([rf_set, rb_set, mb_set, vnb_set])
 
     @property
     def actual_sum(self):
-        return Math.calculate_ratio_mastered_to_unmastered(
-            self.rf_actually, self.mb_actually, self.vnb_actually)
+        return sum([
+            self.rf_actually, self.rb_actually, self.mb_actually, self.vnb_actually
+        ])
 
 
     @property
-    def planned_sum(self):
+    def percent(self):
         return Math.calculate_ratio_mastered_to_unmastered(
-            self.actual_sum, self.planned_sum)
+            self.actual_sum, self.planned_sum
+        )
 
 class TableThree(models.Model):
 
@@ -70,11 +73,13 @@ class InitialData(models.Model):
 
 
     event_name = models.CharField(max_length=255,
-                                  verbose_name='Наименование мероприятия')
-    rf_set = models.FloatField(verbose_name='Референс',)
-    mb_set = models.FloatField(verbose_name='МБ',)
-    vnb_set = models.FloatField(verbose_name='ВНБ',)
+                                  verbose_name='Наименование мероприятия',)
+    rf_set = models.FloatField(verbose_name='Референс', default=0.0,)
+    rb_set = models.FloatField(verbose_name='РБ', default=0.0,)
+    mb_set = models.FloatField(verbose_name='МБ', default=0.0)
+    vnb_set = models.FloatField(verbose_name='ВНБ', default=0.0,)
 
 
-    time_execution_plan = models.FloatField(verbose_name='Срок выполнения по плану')
+    time_execution_plan = models.FloatField(verbose_name='Срок выполнения по плану',
+                                            default=0.0,)
     expected_result = models.CharField(max_length=255, verbose_name='Ожидаемы результат',)

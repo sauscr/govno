@@ -1,10 +1,10 @@
-
+# убрать лишние классы (оставить просто функции)
 class Math:       
     '''
     Методы, связанные с математическими вычислениями.
     '''
 
-    @staticmethod
+
     def calculate_relative_diviation(value1, value2):
         '''
         Вычисление относительной дивергенции между двумя значениями.
@@ -13,7 +13,7 @@ class Math:
             return round(abs(((value1 - value2) / value1) * 100), 2)
         return None
         
-    @staticmethod
+
     def calculate_ratio_mastered_to_unmastered(value1, value2):
         '''
         Вычисляет % выполнения.
@@ -29,7 +29,6 @@ class ResultService:
     Методы, связанные с определением результатов.
     '''
 
-    @staticmethod
     def result(plan_value, actual_value):
         if plan_value > actual_value:
             return 'Не достигнут'
@@ -37,13 +36,3 @@ class ResultService:
             return 'Достигнут'
         
 
-
-class UtilityService:
-    '''
-    Вспомогательные методы.
-    '''
-
-    @staticmethod
-    def calculate_sums(*args):
-        return sum(args)
-    

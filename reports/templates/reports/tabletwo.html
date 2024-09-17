@@ -1,39 +1,44 @@
 <form method="POST">
     {% csrf_token %}
     {{ form.as_p }}
+    
+    <h3>Таблица данных</h3>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Наименование мероприятия</th>
+                <th>Всего по плану</th>
+                <th>РФ</th>
+                <th>РБ</th>
+                <th>МБ</th>
+                <th>ВНБ</th>
+                <th>Всего по факту</th>
+                <th>РФ</th>
+                <th>РБ</th>
+                <th>МБ</th>
+                <th>ВНБ</th>
+                <th>Отношение фактически освоенного к предусмотренному обьему</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for initial, table in combined_data %}
+            <tr>
+                <td>{{ initial.name }}</td>
+                <td>{{ table.planned_sum }}</td>
+                <td>{{ initial.rf_set }}</td>
+                <td>{{ initial.rb_set }}</td>
+                <td>{{ initial.mb_set }}</td>
+                <td>{{ initial.vnb_set }}</td>
+                <td>{{ table.actual_sum }}</td>
+                <td>{{ table.rf_actually }}</td>
+                <td>{{ table.rb_actually }}</td>
+                <td>{{ table.mb_actually }}</td>
+                <td>{{ table.vnb_actually }}</td>
+                <td>{{ initial.percent }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
     <button type="submit">Сохранить</button>
 </form>
-
-<h2>Таблица данных</h2>
-<table border="1">
-    <thead>
-        <tr>
-            <th>Наименование мероприятия</th>
-            <th>План</th>
-            <th>РФ</th>
-            <th>МБ</th>
-            <th>ВНБ</th>
-            <th>Факт</th>
-            <th>РБ</th>
-            <th>МБ</th>
-            <th>ВНБ</th>
-            <th>Отношение фактически освоенного к предусмотренному обьему</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for indicator in indicators %}
-        <tr>
-            <td>{{ indicator.name }}</td>
-            <td>{{ indicator.planned_sum }}</td>
-            <td>{{ indicator.rf_set }}</td>
-            <td>{{ indicator.mb_set }}</td>
-            <td>{{ indicator.vnb_set }}</td>
-            <td>{{ indicator.actual_sum }}</td>
-            <td>{{ indicator.rf_actually }}</td>
-            <td>{{ indicator.mb_actually }}</td>
-            <td>{{ indicator.vnb_actually }}</td>
-            <td>{{ indicator.mastered_to_unmastered }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
