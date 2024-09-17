@@ -2,16 +2,13 @@ from django.apps import apps
 from django.conf import settings
 
 class LoadDataMiddleware:
-    def __init__(self, get_response):
-        self.get_response = get_response
-        self.models_to_load = getattr(settings, 'MODEL_NAMES', [])
-
     def __call__(self, request):
-        for model_name in self.models_to_load:
+        # Убедись, что model_name соответствует действующей модели
+        model_name = 'TableOne'  # или другое имя модели
+        try:
             model = apps.get_model('reports', model_name)
-            setattr(request, model_name.lower() + 's', model.objects.all())
-        response = self.get_response(request)
-        return response
+        except LookupError:
+            raise LookupError(f"Model '{model_name}' not found in 'reports' app.")
 # Middleware - это класс, который может быть добавлен в Django-приложение, чтобы выполнять определенные действия при обработке каждого запроса.
 # В данном случае, LoadDataMiddleware выполняет следующие действия:
 

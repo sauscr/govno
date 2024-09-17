@@ -1,0 +1,39 @@
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Сохранить</button>
+</form>
+
+<h2>Таблица данных</h2>
+<table border="1">
+    <thead>
+        <tr>
+            <th>Наименование мероприятия</th>
+            <th>План</th>
+            <th>РФ</th>
+            <th>МБ</th>
+            <th>ВНБ</th>
+            <th>Факт</th>
+            <th>РБ</th>
+            <th>МБ</th>
+            <th>ВНБ</th>
+            <th>Отношение фактически освоенного к предусмотренному обьему</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for indicator in indicators %}
+        <tr>
+            <td>{{ indicator.name }}</td>
+            <td>{{ indicator.planned_sum }}</td>
+            <td>{{ indicator.rf_set }}</td>
+            <td>{{ indicator.mb_set }}</td>
+            <td>{{ indicator.vnb_set }}</td>
+            <td>{{ indicator.actual_sum }}</td>
+            <td>{{ indicator.rf_actually }}</td>
+            <td>{{ indicator.mb_actually }}</td>
+            <td>{{ indicator.vnb_actually }}</td>
+            <td>{{ indicator.mastered_to_unmastered }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

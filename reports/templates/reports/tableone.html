@@ -1,0 +1,34 @@
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <h3>Данные из InitialData и TableOne:</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Наименование</th>
+                <th>Единица измерения</th>
+                <th>План</th>
+                <th>Факт</th>
+                <th>Причина отклонения</th>
+                <th>Результат</th>
+                <th>Относительное отклонение</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for initial, table in combined_data %}
+            <tr>
+                <td>{{ initial.indicator_name }}</td>
+                <td>{{ initial.unit }}</td>
+                <td>{{ initial.plan_value }}</td>
+                <td>{{ table.actual_value }}</td>
+                <td>{{ table.diff_reason }}</td>
+                <td>{{ table.result }}</td>
+                <td>{{ table.percentage_deviation }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <button type="submit">Сохранить</button>
+</form>
