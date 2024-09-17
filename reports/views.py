@@ -87,7 +87,7 @@ def view_table_two(request):
 
     table_data_values = get_table_data_values(
         TableTwo.objects.all(),
-        ['rf_actually', 'mb_actually', 'vnb_actually',
+        ['rf_actually', 'rb_actually', 'mb_actually', 'vnb_actually',
          'planned_sum', 'actual_sum', 'percent',]
     )
     combined_data = zip(initial_data_walues, table_data_values)

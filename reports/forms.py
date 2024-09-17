@@ -34,7 +34,7 @@ class InitialDataForm(CleanMixin, forms.ModelForm):
     class Meta:
         model = InitialData
         fields = ['indicator_name', 'unit', 'event_name',
-                  'plan_value','rf_set', 'mb_set', 'vnb_set',
+                  'plan_value','rf_set', 'rb_set', 'mb_set', 'vnb_set',
                   'time_execution_plan', 'expected_result'
     ]
 

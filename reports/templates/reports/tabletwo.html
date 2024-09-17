@@ -23,7 +23,7 @@
         <tbody>
             {% for initial, table in combined_data %}
             <tr>
-                <td>{{ initial.name }}</td>
+                <td>{{ initial.event_name }}</td>
                 <td>{{ table.planned_sum }}</td>
                 <td>{{ initial.rf_set }}</td>
                 <td>{{ initial.rb_set }}</td>
@@ -34,7 +34,7 @@
                 <td>{{ table.rb_actually }}</td>
                 <td>{{ table.mb_actually }}</td>
                 <td>{{ table.vnb_actually }}</td>
-                <td>{{ initial.percent }}</td>
+                <td>{{ table.percent }}</td>
             </tr>
             {% endfor %}
         </tbody>
