@@ -84,11 +84,20 @@
 <script>
     $(document).ready(function() {
         
-        $('#activityTable').DataTable({
-            "language": {
-                "curl": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Russian.json"
-            }
-        });
+       // Инициализируем DataTable и сохраняем в переменную
+    //    var table = $('#activeTable').DataTable({
+    //         "language": {
+    //             "curl": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Russian.json"
+    //         },
+    //         "autoWidth": false,  // Важно для правильной ширины
+    //         "paging": true,      // Включаем пагинацию
+    //         "ordering": true,    // Включаем сортировку
+    //         "info": true,        // Показываем информацию
+    //         "searching": true,    // Включаем поиск
+    //         "columnDefs": [
+    //             { "targets": [0], "searchable": false, "orderable": false }
+    //         ]
+    //     });
 
         $('#indicatorTable').on('click', '.edit-btn', function() {
     console.log("Edit button clicked"); // Добавьте это, чтобы проверить, срабатывает ли событие
