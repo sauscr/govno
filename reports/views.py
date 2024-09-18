@@ -1,110 +1,110 @@
 
 from django.shortcuts import render, redirect
 from .models import TableOne, TableTwo, TableThree, InitialData
-from .forms import TableOneForm, TableTwoForm, InitialDataForm
+from .forms import TableOneForm, TableTwoForm, TableThreeForm, InitialDataForm
+
+
+def process_form(request, form_class, redirect_url):
+    '''
+    Обработчик формы
+    '''
+    if request.method == 'POST':
+        form = form_class(request.POST)
+        if form.is_valid():
+            instance  = form.save(commit=False)
+            instance .save()
+            return redirect(redirect_url)
+    else:
+        form = form_class()
+    return form
+
+
+def get_values(data_list, fields):
+    '''
+    Возвращает данные из модели в виде списка словарей
+    '''
+    return [
+        {field: getattr(item, field) for field in fields}
+        for item in data_list
+    ]
+
+
 
 
 
 def data_view(request):
+    url = '/reports/tableone/'
+    form = process_form(request, InitialDataForm, url)
+    values = InitialData.objects.all()
 
-    if request.method == 'POST':
-        form = InitialDataForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('')
-    else:
-        form = InitialDataForm()
-
-    indicators = InitialData.objects.all()
-
-    return render(request,'reports/initial_data.html',
-                  {'form': form,
-                   'indicators': indicators})
-
-
+    return render(request,'reports/initial_data.html',{
+        'form': form,
+        'values': values,
+    })
 
 
 def view_table_one(request):
+    url = '/reports/tableone/'
+    form = process_form(request, TableOneForm, url)
 
-    initial_data_list = InitialData.objects.all()
-    table_data = TableOne.objects.all()
+    initial_data_values = get_values(
+        InitialData.objects.all(),
+        ['indicator_name', 'unit', 'plan_value',]
+    )
 
-    if request.method == 'POST':
-        form = TableOneForm(request.POST)
-        if form.is_valid():
-            instance = form.save(commit=False)
-            instance.result = instance.result
-            instance.percentage_deviation = instance.percentage_deviation
-            instance.save()
-            return redirect('')
-    else:
-        form = TableOneForm()
+    table_data_values = get_values(
+        TableOne.objects.all(),
+        ['actual_value', 'result', 'percentage_deviation',]
+    )
 
-    initial_data_values = []
-    for initial_data in initial_data_list:
-        initial_data_values.append({
-            'indicator_name': initial_data.indicator_name,
-            'unit': initial_data.unit,
-            'plan_value': initial_data.plan_value,
-        })
+    combined_data = zip(initial_data_values, table_data_values)
 
-    table_data_values = []
-    for table_item in table_data:
-        table_data_values.append({
-            'actual_value': table_item.actual_value,
-            'result': table_item.result,
-            'percentage_deviation': table_item.percentage_deviation,
-        })
-
-    combined_data = zip(initial_data_values, table_data)
-
-    return render(request, 'reports/tableone.html', {
+    return render(request, 'reports/tableone.html',{
         'form': form,
         'combined_data': combined_data,
     })
 
 
 def view_table_two(request):
+    url = '/reports/tabletwo/'
+    form = process_form(request, TableTwoForm, url)
 
-    initial_data_list = InitialData.objects.all()
-    table_data = TableTwo.objects.all()
+    initial_data_values = get_values(
+        InitialData.objects.all(),
+        ['event_name', 'rf_set', 'rb_set', 'mb_set', 'vnb_set',]
+    )
 
-    if request.method == 'POST':
-        form = TableTwoForm(request.POST)
-        if form.is_valid():
-            instance = form.save(commit=False)
-            instance.planned_sum_set = instance.planned_sum_set
-            instance.actual_sum = instance.actual_sum
-            instance.planned_sum = instance.planned_sum
-            instance.save()
-            return redirect('')
-    else:
-        form = TableTwoForm()
+    table_data_values = get_values(
+        TableTwo.objects.all(),
+        ['rf_actually', 'rb_actually', 'mb_actually', 'vnb_actually',
+         'planned_sum', 'actual_sum', 'percent',]
+    )
+    combined_data = zip(initial_data_values, table_data_values)
+
+    return render(request,'reports/tabletwo.html', {
+        'form': form,
+        'combined_data': combined_data,
+    })
 
 
-    initial_data_values = []
-    for initial_data in initial_data_list:
-        initial_data_values.append({
-            'event_name': initial_data.event_name,
-            'rf_set': initial_data.rf_set,
-            'mb_set': initial_data.mb_set,
-            'vnb_set': initial_data.vnb_set,
-        })
+def view_table_three(request):
+    url = '/reports/tablethree/'
+    form = process_form(request, TableThreeForm, url)
 
-    table_data_values = []
-    for table_item in table_data:
-        table_data_values.append({
-            'rf_actually': table_item.rf_actually,
-            'mb_actually': table_item.mb_actually,
-            'vnb_actually': table_item.vnb_actually,
-            'plannedplanned_sum_set_sum': table_item.planned_sum_set,
-            'actual_sum': table_item.actual_sum,
-            'planned_sum': table_item.planned_sum,
-        })
-    
-    combined_data = zip(initial_data_values, table_data)
+    initial_data_values = get_values(
+        InitialData.objects.all(),
+        ['event_name', 'expected_result', 'time_execution_plan',]
+    )
 
-    return render(request, 'reports/tableone.html', {
+    table_data_values = get_values(
+        TableThree.objects.all(),
+        ['actual_result', 'time_execution_actually',
+         'executor', 'result', 'percent',]
+    )
+
+    combined_data = zip(initial_data_values, table_data_values)
+
+    return render(request,'reports/tablethree.html', {
         'form': form,
         'combined_data': combined_data,
     })

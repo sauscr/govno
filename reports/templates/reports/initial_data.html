@@ -10,9 +10,10 @@
         <tr>
             <th>indicator_name</th>
             <th>unit</th>
-            <th>plan_value</th>
             <th>event_name</th>
+            <th>plan_value</th>
             <th>rf_set</th>
+            <th>rd_set</th>
             <th>mb_set</th>
             <th>vnb_set</th>
             <th>time_execution_plan</th>
@@ -20,17 +21,18 @@
         </tr>
     </thead>
     <tbody>
-        {% for indicator in indicators %}
+        {% for val in values  %}
         <tr>
-            <td>{{ indicator.indicator_name }}</td>
-            <td>{{ indicator.unit }}</td>
-            <td>{{ indicator.plan_value }}</td>
-            <td>{{ indicator.event_name }}</td>
-            <td>{{ indicator.rf_set }}</td>
-            <td>{{ indicator.mb_set }}</td>
-            <td>{{ indicator.vnb_set }}</td>
-            <td>{{ indicator.time_execution_plan }}</td>
-            <td>{{ indicator.expected_result }}</td>
+            <td>{{ val.indicator_name }}</td>
+            <td>{{ val.unit }}</td>
+            <td>{{ val.plan_value }}</td>
+            <td>{{ val.event_name }}</td>
+            <td>{{ val.rf_set }}</td>
+            <td>{{ val.rd_set }}</td>
+            <td>{{ val.mb_set }}</td>
+            <td>{{ val.vnb_set }}</td>
+            <td>{{ val.time_execution_plan }}</td>
+            <td>{{ val.expected_result }}</td>
         </tr>
         {% endfor %}
     </tbody>

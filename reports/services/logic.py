@@ -1,49 +1,38 @@
+import re
 
-class Math:       
+def calculate_relative_diviation(value1, value2):
     '''
-    Методы, связанные с математическими вычислениями.
+    Вычисление относительной дивергенции между двумя значениями.
     '''
-
-    @staticmethod
-    def calculate_relative_diviation(value1, value2):
-        '''
-        Вычисление относительной дивергенции между двумя значениями.
-        '''
-        if value1 is not None and value1 != 0:
-            return round(abs(((value1 - value2) / value1) * 100), 2)
-        return None
+    if value1 is not None and value1 != 0:
+        return round(abs(((value1 - value2) / value1) * 100), 2)
+    return None
         
-    @staticmethod
-    def calculate_ratio_mastered_to_unmastered(value1, value2):
-        '''
-        Вычисляет % выполнения.
-        '''
-        if value1 is not None and value1 != 0:
-            return round((value1 / value2) * 100, 2)
-        return None
+def calculate_ratio_mastered_to_unmastered(value1, value2):
+    '''
+    Вычисляет % выполнения.
+    '''
+    if value1 is not None and value1 != 0:
+        return round((value1 / value2) * 100, 2)
+    return None
 
 
-
-class ResultService:
+def result(plan_value, actual_value):
     '''
     Методы, связанные с определением результатов.
     '''
-
-    @staticmethod
-    def result(plan_value, actual_value):
-        if plan_value > actual_value:
-            return 'Не достигнут'
-        else:
-            return 'Достигнут'
+    if plan_value > actual_value:
+        return 'Не достигнут'
+    else:
+        return 'Достигнут'
         
 
-
-class UtilityService:
+def extract_text(text):
     '''
-    Вспомогательные методы.
+    Поиска текста между двойными кавычками в строке.
     '''
-
-    @staticmethod
-    def calculate_sums(*args):
-        return sum(args)
-    
+    pattern = r'«(.*?)»'
+    much = re.search(pattern, text)
+    if much:
+        return much.group(1)
+    return None

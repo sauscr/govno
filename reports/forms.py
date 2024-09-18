@@ -27,14 +27,16 @@ class InitialDataForm(CleanMixin, forms.ModelForm):
     '''
     Форма для заполнения инициализируемых данных.
     '''
-    required_fields = ['plan_value', 'rf_set', 'mb_set',
-                       'vnb_set', 'time_execution_plan',]
+    required_fields = ['plan_value', 'rf_set', 'rb_set', 'mb_set',
+                       'vnb_set', 'time_execution_plan',
+    ]
 
     class Meta:
         model = InitialData
         fields = ['indicator_name', 'unit', 'event_name',
-                  'plan_value','rf_set', 'mb_set', 'vnb_set',
-                  'time_execution_plan', 'expected_result']
+                  'plan_value','rf_set', 'rb_set', 'mb_set', 'vnb_set',
+                  'time_execution_plan', 'expected_result'
+    ]
 
 
 class TableOneForm(CleanMixin, forms.ModelForm):
@@ -45,18 +47,22 @@ class TableOneForm(CleanMixin, forms.ModelForm):
 
     class Meta:
         model = TableOne
-        fields = ['actual_value', 'diff_reason',]
+        fields = ['actual_value', 'diff_reason', 'init',]
     
 
 class TableTwoForm(CleanMixin, forms.ModelForm):
     '''
     Форма для модели второй таблицы.
     '''
-    required_fields = ['rf_actually', 'mb_actually', 'vnb_actually',]
+    required_fields = ['rf_actually','rb_actually',
+                       'mb_actually', 'vnb_actually',
+    ]
     
     class Meta:
         model = TableTwo
-        fields = ['rf_actually', 'mb_actually', 'vnb_actually',]
+        fields = ['rf_actually','rb_actually',
+                  'mb_actually', 'vnb_actually', 'init',
+        ]
 
 
 class TableThreeForm(CleanMixin, forms.ModelForm):
@@ -67,5 +73,5 @@ class TableThreeForm(CleanMixin, forms.ModelForm):
     
     class Meta:
         model = TableThree
-        fields = ['time_execution_actually', 'actual_result',]
+        fields = ['time_execution_actually', 'actual_result', 'init',]
 
