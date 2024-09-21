@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from reports.models import InitialData, TableOne, TableTwo, TableThree
+from .models import InitialData, TableOne, TableTwo, TableThree
 
 
 class InitialDataSerializer(serializers.ModelSerializer):
@@ -18,8 +18,12 @@ class TableOneSerializer(serializers.ModelSerializer):
     class Meta:
         model = TableOne
         fields = [
-            'actual_value', 'diff_reason', 'init',
-            'result', 'percentage_deviation'
+            'actual_value',
+            'actual_value',
+            'diff_reason',
+            'init',
+            'result',
+            'percentage_deviation',
         ]
 
 
@@ -34,9 +38,14 @@ class TableTwoSerializer(serializers.ModelSerializer):
     class Meta:
         model = TableTwo
         fields = [
-            'rf_actually', 'rb_actually', 'mb_actually',
-            'vnb_actually', 'init', 'planned_sum',
-            'actual_sum', 'percent'
+            'rf_actually',
+            'rb_actually',
+            'mb_actually',
+            'vnb_actually',
+            'init',
+            'planned_sum',
+            'actual_sum',
+            'percent',
         ]
 
 class TableThreeSerializer(serializers.ModelSerializer):
@@ -50,6 +59,10 @@ class TableThreeSerializer(serializers.ModelSerializer):
     class Meta:
         model = TableThree
         fields = [
-            'time_execution_actually', 'actual_result',
-            'init', 'executor', 'result', 'percent'
+            'time_execution_actually',
+            'actual_result',
+            'init',
+            'executor',
+            'result',
+            'percent',
         ]

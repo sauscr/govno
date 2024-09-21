@@ -1,5 +1,5 @@
 from django.db import models
-from services.logic_services import *
+from .services.logic_services import *
 
 class TableOne(models.Model):
 

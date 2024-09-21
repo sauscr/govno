@@ -1,102 +1,116 @@
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status, viewsets
 
-from django.shortcuts import render, redirect
-from services.view_services import *
-from .models import TableOne, TableTwo, TableThree, InitialData
-from .forms import TableOneForm, TableTwoForm, TableThreeForm, InitialDataForm
+from .models import InitialData, TableOne, TableTwo, TableThree, InitialData
+from .serializers import InitialDataSerializer,\
+    TableOneSerializer, TableTwoSerializer, TableThreeSerializer
 
-def process_form(request, form_class, redirect_url):
+
+
+class InitialDataViewSet(viewsets.ModelViewSet):
+    queryset = InitialData.objects.all()
+    serializer_class = InitialDataSerializer
+
+class TableOneViewSet(viewsets.ModelViewSet):
+    queryset = TableOne.objects.all()
+    serializer_class = TableOneSerializer
+
+class TableTwoViewSet(viewsets.ModelViewSet):
+    queryset = TableTwo.objects.all()
+    serializer_class = TableTwoSerializer
+
+class TableThreeViewSet(viewsets.ModelViewSet):
+    queryset = TableThree.objects.all()
+    serializer_class = TableThreeSerializer
+
+
+class DataAPIView(APIView):
     '''
-    Обработчик формы
+    Универсальный APIView для таблиц
     '''
-    if request.method == 'POST':
-        form = form_class(request.POST)
-        if form.is_valid():
-            instance  = form.save(commit=False)
-            instance .save()
-            return redirect(redirect_url)
-    else:
-        form = form_class()
-    return form
+    model = None
+    serializer_class = None
+    initial_fields = []
+    table_fields = []
+    
+    def get(self, request):
+        values = InitialData.objects.values(*self.initial_fields)
+        table_data = self.model.objects.values(*self.table_fields)
+
+        combined_data =[
+            {**init, **table} for init, table in zip(values, table_data)
+        ]
+        return Response(combined_data, status=status.HTTP_200_OK)
+    
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 
+class InitialDataView(DataAPIView):
+    '''
+    API для InitialData
+    '''
+    model = InitialData
+    serializer_class = InitialDataSerializer
 
 
+class TableOneAPIView(DataAPIView):
 
-def data_view(request):
-    url = '/reports/tableone/'
-    form = process_form(request, InitialDataForm, url)
-    values = get_all_objects(InitialData)
-
-    return render(request, 'reports/initial_data.html', {
-        'form': form,
-        'values': values,
-    })
-
-
-def view_table_one(request):
-    url = '/reports/tableone/'
-    form = process_form(request, TableOneForm, url)
-
-    initial_data_values = get_values(
-        get_all_objects(InitialData),
-        ['indicator_name', 'unit', 'plan_value',]
-    )
-
-    table_data_values = get_values(
-        get_all_objects(TableOne),
-        ['actual_value', 'result', 'percentage_deviation',]
-    )
-
-    combined_data = zip(initial_data_values, table_data_values)
-
-    return render(request, 'reports/tableone.html', {
-        'form': form,
-        'combined_data': combined_data,
-    })
+    model = TableOne
+    serializer_class = InitialDataSerializer
+    initial_fields = [
+        'indicator_name',
+        'unit',
+        'plan_value',
+    ]
+    table_fields = [
+        'actual_value',
+        'result',
+        'percentage_deviation',
+    ]
 
 
-def view_table_two(request):
-    url = '/reports/tabletwo/'
-    form = process_form(request, TableTwoForm, url)
+class TableTwoAPIView(DataAPIView):
 
-    initial_data_values = get_values(
-        get_all_objects(InitialData),
-        ['event_name', 'rf_set', 'rb_set', 'mb_set', 'vnb_set',]
-    )
+    model = TableTwo
+    serializer_class = InitialDataSerializer
+    initial_fields = [
+        'event_name',
+        'rf_set',
+        'rb_set',
+        'mb_set',
+        'vnb_set',
+    ]
+    table_fields = [
+        'rf_actually',
+        'rb_actually',
+        'mb_actually',
+        'vnb_actually',
+        'planned_sum',
+        'actual_sum',
+        'percent',
+    ]
 
-    table_data_values = get_values(
-        get_all_objects(TableTwo),
-        ['rf_actually', 'rb_actually', 'mb_actually', 'vnb_actually',
-         'planned_sum', 'actual_sum', 'percent',]
-    )
 
-    combined_data = zip(initial_data_values, table_data_values)
+class TableThreeAPIView(DataAPIView):
 
-    return render(request, 'reports/tabletwo.html', {
-        'form': form,
-        'combined_data': combined_data,
-    })
-
-
-def view_table_three(request):
-    url = '/reports/tablethree/'
-    form = process_form(request, TableThreeForm, url)
-
-    initial_data_values = get_values(
-        get_all_objects(InitialData),
-        ['event_name', 'expected_result', 'time_execution_plan',]
-    )
-
-    table_data_values = get_values(
-        get_all_objects(TableThree),
-        ['actual_result', 'time_execution_actually',
-         'executor', 'result', 'percent',]
-    )
-
-    combined_data = zip(initial_data_values, table_data_values)
-
-    return render(request, 'reports/tablethree.html', {
-        'form': form,
-        'combined_data': combined_data,
-    })
+    model = TableThree
+    serializer_class = InitialDataSerializer
+    initial_fields = [
+        'event_name',
+        'expected_result',
+        'time_execution_plan',
+    ]
+    table_fields = [
+        'actual_result',
+        'time_execution_actually ',
+        'executor',
+        'result',
+        'percent',
+    ]

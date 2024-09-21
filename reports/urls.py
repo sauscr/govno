@@ -1,11 +1,21 @@
 # reports/urls.py
-from django.urls import path
-from . import views
+from django.urls import path, include
+from .views import InitialDataView,\
+    TableOneAPIView, TableTwoAPIView, TableThreeAPIView,\
+    InitialDataViewSet, TableOneViewSet, TableTwoViewSet, TableThreeViewSet
+from rest_framework.routers import DefaultRouter
+
 
 urlpatterns = [
-    path('data/', views.data_view, name = 'data_view'),
-    path('one/', views.view_table_one, name = 'indicator_one'),
-    path('two/', views.view_table_two, name = 'indicator_two'),
-    path('three/', views.view_table_three, name='indicator_three'),
+    path('data/', InitialDataView.as_view(), name = 'data_view'),
+    path('one/', TableOneAPIView.as_view(), name = 'indicator_one'),
+    path('two/', TableTwoAPIView.as_view(), name = 'indicator_two'),
+    path('three/', TableThreeAPIView.as_view(), name='indicator_three'),
 ]
 
+router = DefaultRouter()
+
+router.register(r'initialdata', InitialDataViewSet)
+router.register(r'tableone', TableOneViewSet)
+router.register(r'tabletwo', TableTwoViewSet)
+router.register(r'tablethree', TableThreeViewSet)
