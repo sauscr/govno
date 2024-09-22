@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class TableOne(models.Model):
 
     actual_value = models.FloatField(verbose_name=

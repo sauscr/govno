@@ -36,7 +36,6 @@ class DataAPIView(APIView):
     model = None
     serializer_class = None
     initial_fields = []
-
     
     def get(self, request):
         '''
@@ -63,7 +62,6 @@ class DataAPIView(APIView):
             'table_data': table_serializer.data,
         }
         return Response(combined_data, status=status.HTTP_200_OK)
-    
 
     def post(self, request):
         '''
@@ -81,7 +79,6 @@ class DataAPIView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 
 class InitialDataView(DataAPIView):
@@ -135,3 +132,4 @@ class TableThreeAPIView(DataAPIView):
         'expected_result',
         'time_execution_plan',
     ]
+
