@@ -1,0 +1,36 @@
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    
+    <h3>Таблица данных</h3>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Наименование мероприятия</th>
+                <th>Ответственный исполнитель</th>
+                <th>Срок по плану</th>
+                <th>Срок по факту</th>
+                <th>Ожидаемый результат</th>
+                <th>Достигнутый результат</th>
+                <th>Статус мероприятия</th>
+                <th>Процент выполнения</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for initial, table in combined_data %}
+            <tr>
+                <td>{{ initial.event_name }}</td>
+                <td>{{ table.executor }}</td>
+                <td>{{ initial.time_execution_plan }}</td>
+                <td>{{ table.time_execution_actually }}</td>
+                <td>{{ initial.expected_result }}</td>
+                <td>{{ table.actual_result }}</td>
+                <td>{{ table.result }}</td>
+                <td>{{ table.percent }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <button type="submit">Сохранить</button>
+</form>
