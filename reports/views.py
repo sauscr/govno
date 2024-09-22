@@ -1,102 +1,119 @@
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status, viewsets
 
-from django.shortcuts import render, redirect
-from services.view_services import *
-from .models import TableOne, TableTwo, TableThree, InitialData
-from .forms import TableOneForm, TableTwoForm, TableThreeForm, InitialDataForm
-
-def process_form(request, form_class, redirect_url):
-    '''
-    Обработчик формы
-    '''
-    if request.method == 'POST':
-        form = form_class(request.POST)
-        if form.is_valid():
-            instance  = form.save(commit=False)
-            instance .save()
-            return redirect(redirect_url)
-    else:
-        form = form_class()
-    return form
+from .models import InitialData, TableOne, TableTwo, TableThree, InitialData
+from .serializers import InitialDataSerializer,\
+    TableOneSerializer, TableTwoSerializer, TableThreeSerializer
 
 
+class InitialDataViewSet(viewsets.ModelViewSet):
+    queryset = InitialData.objects.all()
+    serializer_class = InitialDataSerializer
+
+class TableOneViewSet(viewsets.ModelViewSet):
+    queryset = TableOne.objects.all()
+    serializer_class = TableOneSerializer
+
+class TableTwoViewSet(viewsets.ModelViewSet):
+    queryset = TableTwo.objects.all()
+    serializer_class = TableTwoSerializer
+
+class TableThreeViewSet(viewsets.ModelViewSet):
+    queryset = TableThree.objects.all()
+    serializer_class = TableThreeSerializer
+
+
+class DataAPIView(APIView):
+    '''Универсальный APIView для таблиц'''
+
+    model = None
+    serializer_class = None
+    initial_fields = []
+
+    
+    def get(self, request):
+        '''
+        Метод извлекает данные из модели и возвращает их в формате JSON.
+
+        - self.initial_fields: список полей, которые будут извлечены из модели `InitialData`.
+        - self.table_fields: список полей, которые будут извлечены из модели,
+        заданной в `self.model`.
+        
+        return: объект Response с данными в формате JSON, содержащий:
+            - initial_data: данные из модели `InitialData`,
+            сериализованные с использованием `InitialDataSerializer`.
+            - table_data: данные из модели, заданной в `self.model`,
+            сериализованные с использованием `self.serializer_class`.
+        '''
+        values = InitialData.objects.only(*self.initial_fields)
+        initial_serializer = InitialDataSerializer(values, many=True)
+
+        table_data = self.model.objects.all()
+        table_serializer = self.serializer_class(table_data, many=True)
+
+        combined_data = {
+            'initial_data': initial_serializer.data,
+            'table_data': table_serializer.data,
+        }
+        return Response(combined_data, status=status.HTTP_200_OK)
+    
+
+    def post(self, request):
+        '''
+        Метод принимает данные от клиента, валидирует их и сохраняет в базе данных.
+
+        - self.serializer_class: сериализатор,
+        используемый для валидации и сохранения данных.
+
+        return: объект Response с данными о созданном объекте или ошибками валидации:
+            - статус 201 (CREATED) успешная валидация.
+            - статус 400 (BAD REQUEST) ошибка валидации.
+        '''
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 
-
-def data_view(request):
-    url = '/reports/tableone/'
-    form = process_form(request, InitialDataForm, url)
-    values = get_all_objects(InitialData)
-
-    return render(request, 'reports/initial_data.html', {
-        'form': form,
-        'values': values,
-    })
+class InitialDataView(DataAPIView):
+    '''API для InitialData'''
+    model = InitialData
+    serializer_class = InitialDataSerializer
 
 
-def view_table_one(request):
-    url = '/reports/tableone/'
-    form = process_form(request, TableOneForm, url)
+class TableOneAPIView(DataAPIView):
 
-    initial_data_values = get_values(
-        get_all_objects(InitialData),
-        ['indicator_name', 'unit', 'plan_value',]
-    )
-
-    table_data_values = get_values(
-        get_all_objects(TableOne),
-        ['actual_value', 'result', 'percentage_deviation',]
-    )
-
-    combined_data = zip(initial_data_values, table_data_values)
-
-    return render(request, 'reports/tableone.html', {
-        'form': form,
-        'combined_data': combined_data,
-    })
+    model = TableOne
+    serializer_class = TableOneSerializer
+    initial_fields = [
+        'indicator_name',
+        'unit',
+        'plan_value',
+    ]
 
 
-def view_table_two(request):
-    url = '/reports/tabletwo/'
-    form = process_form(request, TableTwoForm, url)
+class TableTwoAPIView(DataAPIView):
 
-    initial_data_values = get_values(
-        get_all_objects(InitialData),
-        ['event_name', 'rf_set', 'rb_set', 'mb_set', 'vnb_set',]
-    )
-
-    table_data_values = get_values(
-        get_all_objects(TableTwo),
-        ['rf_actually', 'rb_actually', 'mb_actually', 'vnb_actually',
-         'planned_sum', 'actual_sum', 'percent',]
-    )
-
-    combined_data = zip(initial_data_values, table_data_values)
-
-    return render(request, 'reports/tabletwo.html', {
-        'form': form,
-        'combined_data': combined_data,
-    })
+    model = TableTwo
+    serializer_class = InitialDataSerializer
+    initial_fields = [
+        'event_name',
+        'rf_set',
+        'rb_set',
+        'mb_set',
+        'vnb_set',
+    ]
 
 
-def view_table_three(request):
-    url = '/reports/tablethree/'
-    form = process_form(request, TableThreeForm, url)
+class TableThreeAPIView(DataAPIView):
 
-    initial_data_values = get_values(
-        get_all_objects(InitialData),
-        ['event_name', 'expected_result', 'time_execution_plan',]
-    )
-
-    table_data_values = get_values(
-        get_all_objects(TableThree),
-        ['actual_result', 'time_execution_actually',
-         'executor', 'result', 'percent',]
-    )
-
-    combined_data = zip(initial_data_values, table_data_values)
-
-    return render(request, 'reports/tablethree.html', {
-        'form': form,
-        'combined_data': combined_data,
-    })
+    model = TableThree
+    serializer_class = InitialDataSerializer
+    initial_fields = [
+        'event_name',
+        'expected_result',
+        'time_execution_plan',
+    ]

@@ -1,5 +1,5 @@
 from django.db import models
-from services.logic_services import *
+from .services.logic_services import *
 
 class TableOne(models.Model):
 
@@ -10,19 +10,6 @@ class TableOne(models.Model):
                                    'Обоснование отклонения фактического значения',)
     
     init = models.ForeignKey('InitialData', on_delete=models.CASCADE, null=True)
-
-    @property
-    def result(self):
-        plan_value = self.init.plan_value
-        return result(
-            plan_value,
-            self.actual_value)
-    
-    @property
-    def percentage_deviation(self):
-        plan_value = self.init.plan_value
-        return calculate_relative_diviation(plan_value,
-                                             self.actual_value)
 
 
 class TableTwo(models.Model):
