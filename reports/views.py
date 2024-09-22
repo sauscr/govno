@@ -5,7 +5,9 @@ from rest_framework import status, viewsets
 from .models import InitialData, TableOne, TableTwo, TableThree, InitialData
 from .serializers import InitialDataSerializer,\
     TableOneSerializer, TableTwoSerializer, TableThreeSerializer
+from .utils import result, calculate_relative_deviation
 
+from django.db.models import F, FloatField, CharField, ExpressionWrapper
 
 
 class InitialDataViewSet(viewsets.ModelViewSet):
@@ -26,24 +28,59 @@ class TableThreeViewSet(viewsets.ModelViewSet):
 
 
 class DataAPIView(APIView):
-    '''
-    Универсальный APIView для таблиц
-    '''
+    '''Универсальный APIView для таблиц'''
+
     model = None
     serializer_class = None
     initial_fields = []
     table_fields = []
+    computed_fields = {}
     
     def get(self, request):
+        '''
+        Метод извлекает данные из модели и возвращает их в формате JSON.
+
+        - self.initial_fields: список полей, которые будут извлечены из модели `InitialData`.
+        - self.table_fields: список полей, которые будут извлечены из модели,
+        заданной в `self.model`.
+        
+        return: объект Response с данными в формате JSON, содержащий:
+            - initial_data: данные из модели `InitialData`,
+            сериализованные с использованием `InitialDataSerializer`.
+            - table_data: данные из модели, заданной в `self.model`,
+            сериализованные с использованием `self.serializer_class`.
+        '''
         values = InitialData.objects.values(*self.initial_fields)
+        initial_serializer = InitialDataSerializer(values, many=True)
+
         table_data = self.model.objects.values(*self.table_fields)
 
-        combined_data =[
-            {**init, **table} for init, table in zip(values, table_data)
-        ]
+        for field_name, (func, args) in self.computed_fields.items():
+            expression = func(*args)
+            table_data = table_data.annotate(
+                **{field_name: expression}
+            )
+
+        table_serializer = self.serializer_class(table_data, many=True)
+
+        combined_data = {
+            'initial_data': initial_serializer.data,
+            'table_data': table_serializer.data,
+        }
         return Response(combined_data, status=status.HTTP_200_OK)
     
+
     def post(self, request):
+        '''
+        Метод принимает данные от клиента, валидирует их и сохраняет в базе данных.
+
+        - self.serializer_class: сериализатор,
+        используемый для валидации и сохранения данных.
+
+        return: объект Response с данными о созданном объекте или ошибками валидации:
+            - статус 201 (CREATED) успешная валидация.
+            - статус 400 (BAD REQUEST) ошибка валидации.
+        '''
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -63,7 +100,7 @@ class InitialDataView(DataAPIView):
 class TableOneAPIView(DataAPIView):
 
     model = TableOne
-    serializer_class = InitialDataSerializer
+    serializer_class = TableOneSerializer
     initial_fields = [
         'indicator_name',
         'unit',
@@ -71,9 +108,10 @@ class TableOneAPIView(DataAPIView):
     ]
     table_fields = [
         'actual_value',
-        'result',
-        'percentage_deviation',
     ]
+    computed_fields = {
+        'calculate_relative_deviation': (calculate_relative_deviation, (F('init__plan_value'), F('actual_value'))),
+    }
 
 
 class TableTwoAPIView(DataAPIView):

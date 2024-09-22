@@ -11,19 +11,6 @@ class TableOne(models.Model):
     
     init = models.ForeignKey('InitialData', on_delete=models.CASCADE, null=True)
 
-    @property
-    def result(self):
-        plan_value = self.init.plan_value
-        return result(
-            plan_value,
-            self.actual_value)
-    
-    @property
-    def percentage_deviation(self):
-        plan_value = self.init.plan_value
-        return calculate_relative_diviation(plan_value,
-                                             self.actual_value)
-
 
 class TableTwo(models.Model):
 

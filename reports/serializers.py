@@ -5,12 +5,21 @@ from .models import InitialData, TableOne, TableTwo, TableThree
 class InitialDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = InitialData
-        fields = '__all__'
+        fields = [
+            'indicator_name',
+            'unit',
+            'plan_value',
+            'event_name',
+            'rf_set',
+            'rb_set',
+            'mb_set',
+            'vnb_set',
+            'time_execution_plan',
+            'expected_result',
+        ]
 
 
 class TableOneSerializer(serializers.ModelSerializer):
-
-    init = InitialDataSerializer(read_only=True)
     
     result = serializers.ReadOnlyField()
     percentage_deviation = serializers.ReadOnlyField()
@@ -19,11 +28,9 @@ class TableOneSerializer(serializers.ModelSerializer):
         model = TableOne
         fields = [
             'actual_value',
-            'actual_value',
             'diff_reason',
             'init',
-            'result',
-            'percentage_deviation',
+            'percentage_deviation'
         ]
 
 
