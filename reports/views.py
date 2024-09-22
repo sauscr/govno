@@ -25,7 +25,13 @@ class TableThreeViewSet(viewsets.ModelViewSet):
 
 
 class DataAPIView(APIView):
-    '''Универсальный APIView для таблиц'''
+    '''
+    Универсальный APIView для таблиц
+    
+    - model: Ссылка на модель
+    - serializer_class: Сериализатор для модели
+    - initial_fields: Поля из InitialData, которые включены в ответ на GET запрос.
+    '''
 
     model = None
     serializer_class = None
@@ -79,13 +85,19 @@ class DataAPIView(APIView):
 
 
 class InitialDataView(DataAPIView):
-    '''API для InitialData'''
+    '''
+    Класс предоставляет доступ к данным модели InitialData.
+    Использует сериализатор InitialDataSerializer для сериализации данных.
+    '''
     model = InitialData
     serializer_class = InitialDataSerializer
 
 
 class TableOneAPIView(DataAPIView):
-
+    '''
+    Класс предоставляет доступ к данным модели TableOne, 
+    а также возвращает соответствующие поля из модели InitialData.
+    '''
     model = TableOne
     serializer_class = TableOneSerializer
     initial_fields = [
@@ -96,9 +108,12 @@ class TableOneAPIView(DataAPIView):
 
 
 class TableTwoAPIView(DataAPIView):
-
+    '''
+    Класс предоставляет доступ к данным модели TableTwo, 
+    а также возвращает соответствующие поля из модели InitialData.
+    '''
     model = TableTwo
-    serializer_class = InitialDataSerializer
+    serializer_class = TableTwoSerializer
     initial_fields = [
         'event_name',
         'rf_set',
@@ -109,9 +124,12 @@ class TableTwoAPIView(DataAPIView):
 
 
 class TableThreeAPIView(DataAPIView):
-
+    '''
+    Класс предоставляет доступ к данным модели TableThree, 
+    а также возвращает соответствующие поля из модели InitialData.
+    '''
     model = TableThree
-    serializer_class = InitialDataSerializer
+    serializer_class = TableThreeSerializer
     initial_fields = [
         'event_name',
         'expected_result',

@@ -1,5 +1,4 @@
 from django.db import models
-from .services.logic_services import *
 
 class TableOne(models.Model):
 
@@ -21,26 +20,6 @@ class TableTwo(models.Model):
 
     init = models.ForeignKey('InitialData', on_delete=models.CASCADE, null=True)
 
-    @property
-    def planned_sum(self):
-        rf_set = self.init.rf_set
-        rb_set = self.init.rb_set
-        mb_set = self.init.mb_set
-        vnb_set = self.init.vnb_set
-        return sum([rf_set, rb_set, mb_set, vnb_set])
-
-    @property
-    def actual_sum(self):
-        return sum([
-            self.rf_actually, self.rb_actually, self.mb_actually, self.vnb_actually
-        ])
-
-
-    @property
-    def percent(self):
-        return calculate_ratio_mastered_to_unmastered(
-            self.actual_sum, self.planned_sum
-        )
 
 class TableThree(models.Model):
 
@@ -48,27 +27,6 @@ class TableThree(models.Model):
     actual_result = models.CharField(max_length=255, verbose_name='Результат',)
 
     init = models.ForeignKey('InitialData', on_delete=models.CASCADE, null=True)
-
-    @property
-    def executor(self):
-        text = self.init.indicator_name
-        return extract_text(text)
-
-    @property
-    def result(self):
-        plan = self.init.time_execution_plan
-        return result(
-            self.time_execution_actually, plan
-        )
-
-
-    @property
-    def percent(self):
-        plan = self.init.time_execution_plan
-        return calculate_ratio_mastered_to_unmastered(
-            plan, self.time_execution_actually
-        )
-
 
 
 class InitialData(models.Model):
