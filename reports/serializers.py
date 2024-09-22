@@ -20,19 +20,35 @@ class InitialDataSerializer(serializers.ModelSerializer):
 
 
 class TableOneSerializer(serializers.ModelSerializer):
-    
-    result = serializers.ReadOnlyField()
-    percentage_deviation = serializers.ReadOnlyField()
 
+    result = serializers.SerializerMethodField()
+    calculate_relative_deviation = serializers.SerializerMethodField()
     class Meta:
         model = TableOne
         fields = [
             'actual_value',
             'diff_reason',
             'init',
-            'percentage_deviation'
+            'result',
+            'calculate_relative_deviation',
         ]
 
+    def get_result(self, obj):
+        '''Методы, связанные с определением результатов.'''
+        plan_value = obj.init.plan_value
+        actual_value = obj.actual_value
+        if plan_value > actual_value:
+            return 'Не достигнут'
+        else:
+            return 'Достигнут'
+        
+    def get_calculate_relative_deviation(self, obj):
+        '''Вычисление относительной дивергенции между двумя значениями.'''
+        plan_value = obj.init.plan_value
+        actual_value = obj.actual_value
+        if plan_value is not None and actual_value != 0:
+            return round(abs(((plan_value - actual_value) / plan_value) * 100), 2)
+        return None
 
 class TableTwoSerializer(serializers.ModelSerializer):
 

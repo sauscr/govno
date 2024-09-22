@@ -5,9 +5,6 @@ from rest_framework import status, viewsets
 from .models import InitialData, TableOne, TableTwo, TableThree, InitialData
 from .serializers import InitialDataSerializer,\
     TableOneSerializer, TableTwoSerializer, TableThreeSerializer
-from .utils import result, calculate_relative_deviation
-
-from django.db.models import F, FloatField, CharField, ExpressionWrapper
 
 
 class InitialDataViewSet(viewsets.ModelViewSet):
@@ -33,8 +30,7 @@ class DataAPIView(APIView):
     model = None
     serializer_class = None
     initial_fields = []
-    table_fields = []
-    computed_fields = {}
+
     
     def get(self, request):
         '''
@@ -50,17 +46,10 @@ class DataAPIView(APIView):
             - table_data: данные из модели, заданной в `self.model`,
             сериализованные с использованием `self.serializer_class`.
         '''
-        values = InitialData.objects.values(*self.initial_fields)
+        values = InitialData.objects.only(*self.initial_fields)
         initial_serializer = InitialDataSerializer(values, many=True)
 
-        table_data = self.model.objects.values(*self.table_fields)
-
-        for field_name, (func, args) in self.computed_fields.items():
-            expression = func(*args)
-            table_data = table_data.annotate(
-                **{field_name: expression}
-            )
-
+        table_data = self.model.objects.all()
         table_serializer = self.serializer_class(table_data, many=True)
 
         combined_data = {
@@ -90,9 +79,7 @@ class DataAPIView(APIView):
 
 
 class InitialDataView(DataAPIView):
-    '''
-    API для InitialData
-    '''
+    '''API для InitialData'''
     model = InitialData
     serializer_class = InitialDataSerializer
 
@@ -106,12 +93,6 @@ class TableOneAPIView(DataAPIView):
         'unit',
         'plan_value',
     ]
-    table_fields = [
-        'actual_value',
-    ]
-    computed_fields = {
-        'calculate_relative_deviation': (calculate_relative_deviation, (F('init__plan_value'), F('actual_value'))),
-    }
 
 
 class TableTwoAPIView(DataAPIView):
@@ -125,15 +106,6 @@ class TableTwoAPIView(DataAPIView):
         'mb_set',
         'vnb_set',
     ]
-    table_fields = [
-        'rf_actually',
-        'rb_actually',
-        'mb_actually',
-        'vnb_actually',
-        'planned_sum',
-        'actual_sum',
-        'percent',
-    ]
 
 
 class TableThreeAPIView(DataAPIView):
@@ -144,11 +116,4 @@ class TableThreeAPIView(DataAPIView):
         'event_name',
         'expected_result',
         'time_execution_plan',
-    ]
-    table_fields = [
-        'actual_result',
-        'time_execution_actually ',
-        'executor',
-        'result',
-        'percent',
     ]
