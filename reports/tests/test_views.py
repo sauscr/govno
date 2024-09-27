@@ -1,8 +1,8 @@
 from rest_framework.test import APITestCase
 from rest_framework import status
 
-from .models import InitialData, TableOne, TableTwo, TableThree
-from .serializers import TableOneSerializer, TableTwoSerializer, TableThreeSerializer
+from ..models import InitialData, TableOne, TableTwo, TableThree
+from ..serializers import TableOneSerializer, TableTwoSerializer, TableThreeSerializer
 
 from django.urls import reverse
 
@@ -10,7 +10,6 @@ class TableOneAPITest(APITestCase):
     '''
     Тест для вью TableOne
     '''
-    
     def setUp(self):
         '''Подготовка данных перед тестом'''
         self.initial_data = InitialData.objects.create(
@@ -115,7 +114,9 @@ class TableTwoAPITest(APITestCase):
 
 
 class TableThreeAPITest(APITestCase):
-
+    '''
+    Тест для вью TableOne
+    '''
     def setUp(self):
         '''Подготовка данных перед тестом'''
         self.initial_data = InitialData.objects.create(
