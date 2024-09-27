@@ -36,7 +36,6 @@ class DataAPIView(APIView):
     model = None
     serializer_class = None
     initial_fields = []
-
     
     def get(self, request):
         '''
@@ -63,7 +62,6 @@ class DataAPIView(APIView):
             'table_data': table_serializer.data,
         }
         return Response(combined_data, status=status.HTTP_200_OK)
-    
 
     def post(self, request):
         '''
@@ -81,7 +79,45 @@ class DataAPIView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def put(self, request, pk):
+        '''
+        Метод обновляет существующий объект в базе данных.
 
+        - pk: первичный ключ объекта, который необходимо обновить.
+
+        return: объект Response с данными о обновленном объекте или ошибками валидации:
+            - статус 200 (OK) успешная валидация.
+            - статус 400 (BAD REQUEST) ошибка валидации.
+            - статус 404 (NOT FOUND) если объект не найден.
+        '''
+        try:
+            instance = self.model.objects.get(pk=pk)
+        except self.model.DoesNotExist:
+            return Response({'error': 'Object not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = self.serializer_class(instance, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):
+        '''
+        Метод удаляет существующий объект из базы данных.
+
+        - pk: первичный ключ объекта, который необходимо удалить.
+
+        return: объект Response с статусом удаления:
+            - статус 204 (NO CONTENT) успешное удаление.
+            - статус 404 (NOT FOUND) если объект не найден.
+        '''
+        try:
+            instance = self.model.objects.get(pk=pk)
+            instance.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except self.model.DoesNotExist:
+            return Response({'error': 'Object not found.'}, status=status.HTTP_404_NOT_FOUND)
 
 
 class InitialDataView(DataAPIView):
@@ -135,3 +171,4 @@ class TableThreeAPIView(DataAPIView):
         'expected_result',
         'time_execution_plan',
     ]
+

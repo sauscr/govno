@@ -20,3 +20,4 @@ urlpatterns = [
     path('three/', TableThreeAPIView.as_view(), name='indicator_three'),
     path('', include(router.urls)),
 ]
+

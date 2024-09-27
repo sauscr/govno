@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <form method="POST">
     {% csrf_token %}
     {{ form.as_p }}
@@ -42,3 +43,140 @@
 
     <button type="submit">Сохранить</button>
 </form>
+=======
+{% extends "reports/base.html" %}
+{% block title %}Таблица данных{% endblock %}
+
+{% block content %}
+
+<!-- Подключаем стили для DataTables -->
+<link href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" rel="stylesheet">
+
+<h2>Таблица данных мероприятий</h2>
+<table id="activityTable" class="display" style="width:calc(100% - 20px)">
+    <thead>
+        <tr>
+            <th>№</th>
+            <th>Наименование мероприятия</th>
+            <th>План</th>
+            <th>РФ</th>
+            <th>МБ</th>
+            <th>ВНБ</th>
+            <th>Факт</th>
+            <th>РБ</th>
+            <th>МБ</th>
+            <th>ВНБ</th>
+            <th>Отношение фактически освоенного к предусмотренному объему</th>
+            <th>Операции</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for indicator in indicators %}
+        <tr data-id="{{ indicator.id }}">
+            <td>{{ forloop.counter }}</td>
+            <td class="name">{{ indicator.name }}</td>
+            <td class="planned_sum">{{ indicator.planned_sum }}</td>
+            <td class="rf_set">{{ indicator.rf_set }}</td>
+            <td class="mb_set">{{ indicator.mb_set }}</td>
+            <td class="vnb_set">{{ indicator.vnb_set }}</td>
+            <td class="actual_sum">{{ indicator.actual_sum }}</td>
+            <td class="rf_actually">{{ indicator.rf_actually }}</td>
+            <td class="mb_actually">{{ indicator.mb_actually }}</td>
+            <td class="vnb_actually">{{ indicator.vnb_actually }}</td>
+            <td class="mastered_to_unmastered">{{ indicator.mastered_to_unmastered }}</td>
+            <td>
+                <button class="edit-btn">Редактировать</button>
+                <form method="POST" action="{% url 'delete_indicator_two' indicator.id %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="delete-btn">Удалить</button>
+                </form>
+            </td>
+        </tr>
+        <tr class="edit-row" style="display: none;">
+            <td colspan="12">
+                <form method="POST" action="{% url 'edit_indicator_two' indicator.id %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="indicator_id" value="{{ indicator.id }}">
+                    <label>Наименование:
+                        <input type="text" name="name" value="{{ indicator.name }}">
+                    </label>
+                    <label>План:
+                        <input type="text" name="planned_sum" value="{{ indicator.planned_sum }}">
+                    </label>
+                    <label>РФ:
+                        <input type="text" name="rf_set" value="{{ indicator.rf_set }}">
+                    </label>
+                    <label>МБ:
+                        <input type="text" name="mb_set" value="{{ indicator.mb_set }}">
+                    </label>
+                    <label>ВНБ:
+                        <input type="text" name="vnb_set" value="{{ indicator.vnb_set }}">
+                    </label>
+                    <label>Факт:
+                        <input type="text" name="actual_sum" value="{{ indicator.actual_sum }}">
+                    </label>
+                    <label>РБ:
+                        <input type="text" name="rf_actually" value="{{ indicator.rf_actually }}">
+                    </label>
+                    <label>МБ:
+                        <input type="text" name="mb_actually" value="{{ indicator.mb_actually }}">
+                    </label>
+                    <label>ВНБ:
+                        <input type="text" name="vnb_actually" value="{{ indicator.vnb_actually }}">
+                    </label>
+                    <label>Отношение фактически освоенного к предусмотренному объему:
+                        <input type="text" name="mastered_to_unmastered" value="{{ indicator.mastered_to_unmastered }}">
+                    </label>
+                    <button type="submit">Сохранить</button>
+                    <button type="button" class="cancel-btn">Отмена</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Добавить</button>
+</form>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+<script>
+    $(document).ready(function() {
+    // var table = $('#activityTable').DataTable({
+    //     "language": {
+    //         "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Russian.json"
+    //     },
+    //     "autoWidth": false,
+    //     "paging": true,
+    //     "ordering": true,
+    //     "info": true,
+    //     "searching": true
+    // });
+
+    // Код для добавления новой строки через DataTables API
+    $('#activityTable').on('click', '.edit-btn', function() {
+    console.log("Edit button clicked"); // Добавьте это, чтобы проверить, срабатывает ли событие
+    var row = $(this).closest('tr');
+    var editRow = row.next('.edit-row');
+    editRow.toggle(); // Показать/скрыть строку редактирования
+});
+
+
+
+        $('#indicatorTable').on('click', '.cancel-btn', function() {
+            $(this).closest('.edit-row').hide(); // Скрыть строку редактирования
+        });
+    });
+
+</script>
+
+
+
+
+
+{% endblock %}
+>>>>>>> upstream/kaif
