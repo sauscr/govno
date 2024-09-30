@@ -1,71 +1,85 @@
-# reports/views.py
-from django.shortcuts import render, get_object_or_404, redirect
-from django.http import JsonResponse
-from .models import TableOne, TableTwo
-from .forms import TableOneForm, TableTwoForm
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status, viewsets, mixins
 
-def view_table_one(request):
-    if request.method == 'POST':
-        form = TableOneForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('indicator_one')
-    else:
-        form = TableOneForm()
-    
-    indicators = TableOne.objects.all()
+from .models import InitialData, TableOne, TableTwo, TableThree, InitialData
+from .serializers import InitialDataSerializer,\
+    TableOneSerializer, TableTwoSerializer, TableThreeSerializer
 
-    return render(request, 'reports/tableone.html', {'form': form, 'indicators': indicators})
 
-def edit_tableone(request, id):
-    indicator = get_object_or_404(TableOne, id=id)
-    if request.method == 'POST':
-        form = TableOneForm(request.POST, instance=indicator)
-        if form.is_valid():
-            form.save()
-            return redirect('indicator_one')
-    else:
-        form = TableOneForm(instance=indicator)
-    
-    if request.is_ajax():
-        return render(request, 'reports/partials/edit_tableone_form.html', {'form': form})
-    
-    return render(request, 'reports/tableone.html', {'form': form})
+class DataViewSet(
+    mixins.ListModelMixin,
+    mixins.CreateModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+    viewsets.GenericViewSet,
+    ):
 
-def delete_tableone(request, id):
-    indicator = get_object_or_404(TableOne, id=id)
-    indicator.delete()
-    return redirect('indicator_one')
+    queryset = None
+    serializer_class = None
+    initial_fields = []
 
-def view_table_two(request):
-    if request.method == 'POST':
-        form = TableTwoForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('indicator_two')
-    else:
-        form = TableTwoForm()
-    
-    indicators = TableTwo.objects.all()
+    def list(self, request, *args, **kwargs):
+        initial_values = InitialData.objects.only(*self.initial_fields)
+        initial_serializer = InitialDataSerializer(initial_values, many=True)
+        table_data = self.get_queryset()
+        table_serializer = self.get_serializer(table_data, many=True)
+        combined_data = {
+            'initial_data': initial_serializer.data,
+            'table_data': table_serializer.data,
+        }
+        return Response(combined_data, status=status.HTTP_200_OK)
 
-    return render(request, 'reports/tabletwo.html', {'form': form, 'indicators': indicators})
 
-def edit_tabletwo(request, id):
-    indicator = get_object_or_404(TableTwo, id=id)
-    if request.method == 'POST':
-        form = TableTwoForm(request.POST, instance=indicator)
-        if form.is_valid():
-            form.save()
-            return redirect('indicator_two')
-    else:
-        form = TableTwoForm(instance=indicator)
-    
-    # if request.is_ajax():
-    #     return render(request, 'reports/edit_tabletwo.html', {'form': form})
-    
-    return render(request, 'reports/tabletwo.html', {'form': form})
+class InitialDataViewSet(DataViewSet):
+    '''
+    Класс предоставляет доступ к данным модели InitialData.
+    Использует сериализатор InitialDataSerializer для сериализации данных.
+    '''
+    queryset = InitialData.objects.all()
+    serializer_class = InitialDataSerializer
 
-def delete_tabletwo(request, id):
-    indicator = get_object_or_404(TableTwo, id=id)
-    indicator.delete()
-    return redirect('indicator_two')
+
+class TableOneViewSet(DataViewSet):
+    '''
+    Класс предоставляет доступ к данным модели TableOne, 
+    а также возвращает соответствующие поля из модели InitialData.
+    '''
+    queryset = TableOne.objects.all()
+    serializer_class = TableOneSerializer
+    initial_fields = [
+        'indicator_name',
+        'unit',
+        'plan_value',
+    ]
+
+
+class TableTwoViewSet(DataViewSet):
+    '''
+    Класс предоставляет доступ к данным модели TableTwo, 
+    а также возвращает соответствующие поля из модели InitialData.
+    '''
+    queryset = TableTwo.objects.all()
+    serializer_class = TableTwoSerializer
+    initial_fields = [
+        'event_name',
+        'rf_set',
+        'rb_set',
+        'mb_set',
+        'vnb_set',
+    ]
+
+
+class TableThreeViewSet(DataViewSet):
+    '''
+    Класс предоставляет доступ к данным модели TableThree, 
+    а также возвращает соответствующие поля из модели InitialData.
+    '''
+    queryset = TableThree.objects.all()
+    serializer_class = TableThreeSerializer
+    initial_fields = [
+        'event_name',
+        'expected_result',
+        'time_execution_plan',
+    ]
+
