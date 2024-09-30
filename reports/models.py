@@ -1,5 +1,5 @@
 from django.db import models
-from re import re
+import re
 
 
 class TableOne(models.Model):

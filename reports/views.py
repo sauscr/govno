@@ -1,6 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status, viewsets
+from rest_framework import status, viewsets, mixins
 
 from .models import InitialData, TableOne, TableTwo, TableThree, InitialData
 from .serializers import InitialDataSerializer,\
@@ -26,6 +26,29 @@ class TableThreeViewSet(viewsets.GenericViewSet):
     queryset = TableThree.objects.all()
     serializer_class = TableThreeSerializer
 
+class DataViewSet(
+    mixins.ListModelMixin,
+    mixins.CreateModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+    viewsets.GenericViewSet,
+    ):
+
+    queryset = None
+    serializer_class = None
+    initial_fields = []
+
+    def list(self, request, *args, **kwargs):
+        initial_values = InitialData.objects.only(*self.initial_fields)
+        initial_serializer = InitialDataSerializer(initial_values, many=True)
+        table_data = self.get_queryset()
+        table_serializer = self.get_serializer(table_data, many=True)
+        combined_data = {
+            'initial_data': initial_serializer.data,
+            'table_data': table_serializer.data,
+        }
+        return Response(combined_data, status=status.HTTP_200_OK)
+        
 
 class DataAPIView(APIView):
     '''
@@ -123,21 +146,21 @@ class DataAPIView(APIView):
             return Response({'error': 'Object not found.'}, status=status.HTTP_404_NOT_FOUND)
 
 
-class InitialDataView(DataAPIView):
+class InitialDataView(DataViewSet):
     '''
     Класс предоставляет доступ к данным модели InitialData.
     Использует сериализатор InitialDataSerializer для сериализации данных.
     '''
-    model = InitialData
+    queryset = InitialData.objects.all()
     serializer_class = InitialDataSerializer
 
 
-class TableOneAPIView(DataAPIView):
+class TableOneAPIView(DataViewSet):
     '''
     Класс предоставляет доступ к данным модели TableOne, 
     а также возвращает соответствующие поля из модели InitialData.
     '''
-    model = TableOne
+    queryset = TableOne.objects.all()
     serializer_class = TableOneSerializer
     initial_fields = [
         'indicator_name',
@@ -146,12 +169,12 @@ class TableOneAPIView(DataAPIView):
     ]
 
 
-class TableTwoAPIView(DataAPIView):
+class TableTwoAPIView(DataViewSet):
     '''
     Класс предоставляет доступ к данным модели TableTwo, 
     а также возвращает соответствующие поля из модели InitialData.
     '''
-    model = TableTwo
+    queryset = TableTwo.objects.all()
     serializer_class = TableTwoSerializer
     initial_fields = [
         'event_name',
@@ -162,12 +185,12 @@ class TableTwoAPIView(DataAPIView):
     ]
 
 
-class TableThreeAPIView(DataAPIView):
+class TableThreeAPIView(DataViewSet):
     '''
     Класс предоставляет доступ к данным модели TableThree, 
     а также возвращает соответствующие поля из модели InitialData.
     '''
-    model = TableThree
+    queryset = TableThree.objects.all()
     serializer_class = TableThreeSerializer
     initial_fields = [
         'event_name',
