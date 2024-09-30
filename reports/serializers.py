@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from .models import InitialData, TableOne, TableTwo, TableThree
-import re
 
 
 class InitialDataSerializer(serializers.ModelSerializer):
@@ -47,23 +46,6 @@ class TableOneSerializer(serializers.ModelSerializer):
             'calculate_relative_deviation',
         ]
 
-    def get_result(self, obj):
-        '''Методы, связанные с определением результатов.'''
-        plan_value = obj.init.plan_value
-        actual_value = obj.actual_value
-        if plan_value > actual_value:
-            return 'Не достигнут'
-        else:
-            return 'Достигнут'
-        
-    def get_calculate_relative_deviation(self, obj):
-        '''Вычисление относительной дивергенции между двумя значениями.'''
-        plan_value = obj.init.plan_value
-        actual_value = obj.actual_value
-        if plan_value is not None and actual_value != 0:
-            return round(abs(((plan_value - actual_value) / plan_value) * 100), 2)
-        return None
-
 
 class TableTwoSerializer(serializers.ModelSerializer):
     '''
@@ -90,35 +72,6 @@ class TableTwoSerializer(serializers.ModelSerializer):
             # 'calculate_ratio_mastered_to_unmastered', это тоже
         ]
 
-    def get_planned_sum(self, obj):
-        '''Вычисление суммы плановых значений.'''
-        rf_set = obj.init.rf_set
-        rb_set = obj.init.rb_set
-        mb_set = obj.init.mb_set
-        vnb_set = obj.init.vnb_set
-        return sum([
-            rf_set,
-            rb_set,
-            mb_set,
-            vnb_set
-        ])
-
-    def get_actual_sum(self, obj):
-        '''Вычисление суммы фактических значений.'''
-        return sum([
-            obj.rf_actually,
-            obj.rb_actually,
-            obj.mb_actually,
-            obj.vnb_actually,
-        ])
-
-    # def get_calculate_ratio_mastered_to_unmastered(self, obj):
-    #     actual_sum = obj.actual_sum
-    #     planned_sum = obj.planned_sum
-    #     if actual_sum is not None and planned_sum != 0:
-    #         return round((actual_sum / planned_sum) * 100, 2)
-    #     return None          и это тоже не работает
-
 
 class TableThreeSerializer(serializers.ModelSerializer):
     '''
@@ -143,30 +96,3 @@ class TableThreeSerializer(serializers.ModelSerializer):
             'result',
             'percent',
         ]
-
-    def get_executor(self, obj):
-        '''Поиска текста между двойными кавычками в строке.'''
-        text = obj.init.event_name
-        pattern = r'«(.*?)»'
-        much = re.search(pattern, text)
-        if much:
-            return much.group(1)
-        return None
-
-    def get_result(self, obj):
-        '''Методы, связанные с определением результатов.'''
-        time_execution_actually = obj.time_execution_actually
-        time_execution_plan = obj.init.time_execution_plan
-        if time_execution_actually > time_execution_plan:
-            return 'Не достигнут'
-        else:
-            return 'Достигнут'
-
-    def get_percent(self, obj):
-        '''Вычисление процента выполнения задачи.'''
-        time_execution_actually = obj.time_execution_actually
-        time_execution_plan = obj.init.time_execution_plan
-        if time_execution_actually is not None and time_execution_plan != 0:
-            return round((time_execution_actually / time_execution_plan) * 100, 2)
-        return None
-

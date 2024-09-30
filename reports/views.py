@@ -6,6 +6,9 @@ from .models import InitialData, TableOne, TableTwo, TableThree, InitialData
 from .serializers import InitialDataSerializer,\
     TableOneSerializer, TableTwoSerializer, TableThreeSerializer
 
+from typing import Type, List
+from django.db.models import Model
+from django.core.serializers import Serializer
 
 class InitialDataViewSet(viewsets.ModelViewSet):
     queryset = InitialData.objects.all()
@@ -19,7 +22,7 @@ class TableTwoViewSet(viewsets.ModelViewSet):
     queryset = TableTwo.objects.all()
     serializer_class = TableTwoSerializer
 
-class TableThreeViewSet(viewsets.ModelViewSet):
+class TableThreeViewSet(viewsets.GenericViewSet):
     queryset = TableThree.objects.all()
     serializer_class = TableThreeSerializer
 
@@ -55,7 +58,7 @@ class DataAPIView(APIView):
         initial_serializer = InitialDataSerializer(values, many=True)
 
         table_data = self.model.objects.all()
-        table_serializer = self.serializer_class(table_data, many=True)
+        table_serializer = self.get_serializer(table_data, many=True)
 
         combined_data = {
             'initial_data': initial_serializer.data,
