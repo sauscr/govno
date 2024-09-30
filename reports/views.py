@@ -6,10 +6,6 @@ from .models import InitialData, TableOne, TableTwo, TableThree, InitialData
 from .serializers import InitialDataSerializer,\
     TableOneSerializer, TableTwoSerializer, TableThreeSerializer
 
-from typing import Type, List
-from django.db.models import Model
-from django.core.serializers import Serializer
-
 
 class DataViewSet(
     mixins.ListModelMixin,
@@ -35,7 +31,7 @@ class DataViewSet(
         return Response(combined_data, status=status.HTTP_200_OK)
 
 
-class InitialDataView(DataViewSet):
+class InitialDataViewSet(DataViewSet):
     '''
     Класс предоставляет доступ к данным модели InitialData.
     Использует сериализатор InitialDataSerializer для сериализации данных.
@@ -44,7 +40,7 @@ class InitialDataView(DataViewSet):
     serializer_class = InitialDataSerializer
 
 
-class TableOneAPIView(DataViewSet):
+class TableOneViewSet(DataViewSet):
     '''
     Класс предоставляет доступ к данным модели TableOne, 
     а также возвращает соответствующие поля из модели InitialData.
@@ -58,7 +54,7 @@ class TableOneAPIView(DataViewSet):
     ]
 
 
-class TableTwoAPIView(DataViewSet):
+class TableTwoViewSet(DataViewSet):
     '''
     Класс предоставляет доступ к данным модели TableTwo, 
     а также возвращает соответствующие поля из модели InitialData.
@@ -74,7 +70,7 @@ class TableTwoAPIView(DataViewSet):
     ]
 
 
-class TableThreeAPIView(DataViewSet):
+class TableThreeViewSet(DataViewSet):
     '''
     Класс предоставляет доступ к данным модели TableThree, 
     а также возвращает соответствующие поля из модели InitialData.
