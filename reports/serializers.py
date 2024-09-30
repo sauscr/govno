@@ -3,12 +3,6 @@ from .models import InitialData, TableOne, TableTwo, TableThree
 
 
 class InitialDataSerializer(serializers.ModelSerializer):
-    '''
-    Сериализатор для модели InitialData.
-
-    Этот сериализатор используется для преобразования данных модели InitialData 
-    в формат JSON и обратно.
-    '''
     class Meta:
         model = InitialData
         fields = [
@@ -26,16 +20,12 @@ class InitialDataSerializer(serializers.ModelSerializer):
 
 
 class TableOneSerializer(serializers.ModelSerializer):
-    '''
-    Сериализатор для модели TableOne.
+    result = serializers.CharField(source='get_result', read_only=True)
+    calculate_relative_deviation = serializers.FloatField(
+        source='get_calculate_relative_deviation',
+        read_only=True,
+        )
 
-    Этот сериализатор дополнительно включает вычисляемые поля:
-        - result: Показывает, достигнуто ли плановое значение.
-        - calculate_relative_deviation: Вычисляет относительную
-        дивергенцию между фактическим и плановым значением.
-    '''
-    result = serializers.SerializerMethodField()
-    calculate_relative_deviation = serializers.SerializerMethodField()
     class Meta:
         model = TableOne
         fields = [
@@ -48,16 +38,14 @@ class TableOneSerializer(serializers.ModelSerializer):
 
 
 class TableTwoSerializer(serializers.ModelSerializer):
-    '''
-    Сериализатор для модели TableTwo.
-
-    Этот сериализатор включает вычисляемые поля:
-        - planned_sum/get_planned_sum: Сумма плановых значений по набору.
-        - actual_sum/get_actual_sum: Сумма фактических значений по набору.
-    '''
-    planned_sum = serializers.SerializerMethodField()
-    actual_sum = serializers.SerializerMethodField()
-    # calculate_ratio_mastered_to_unmastered = serializers.SerializerMethodField() это пока не работает)
+    planned_sum = serializers.FloatField(
+        source='get_planned_sum',
+        read_only=True,
+        )
+    actual_sum = serializers.FloatField(
+        source='get_actual_sum',
+        read_only=True,
+        )
 
     class Meta:
         model = TableTwo
@@ -69,22 +57,13 @@ class TableTwoSerializer(serializers.ModelSerializer):
             'init',
             'planned_sum',
             'actual_sum',
-            # 'calculate_ratio_mastered_to_unmastered', это тоже
         ]
 
 
 class TableThreeSerializer(serializers.ModelSerializer):
-    '''
-    Сериализатор для модели TableThree.
-
-    Этот сериализатор включает вычисляемые поля:
-        - executor/get_executor: Извлекает имя исполнителя из строки event_name (из " ").
-        - result/get_result: Определяет, достигнута ли цель на основе времени выполнения.
-        - percent/get_percent: Процент выполнения по сравнению с планом.
-    '''
-    executor = serializers.SerializerMethodField()
-    result = serializers.SerializerMethodField()
-    percent = serializers.SerializerMethodField()
+    executor = serializers.CharField(source='get_executor', read_only=True)
+    result = serializers.CharField(source='get_result', read_only=True)
+    percent = serializers.FloatField(source='get_percent', read_only=True)
 
     class Meta:
         model = TableThree
